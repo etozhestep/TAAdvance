@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace TAF.Core;
+namespace TAF.Core.Configuration;
 
 public class AppSettings(
     Ui ui,

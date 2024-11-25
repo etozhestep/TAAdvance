@@ -3,6 +3,7 @@ using System.Drawing;
 using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using TAF.Core.Configuration;
 using Exception = System.Exception;
 
 namespace TAF.Core.Util;

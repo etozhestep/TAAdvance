@@ -1,10 +1,11 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using TAF.Core.Configuration;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager.Helpers;
 
-namespace TAF.Core;
+namespace TAF.Core.Driver;
 
 public class DriverFactory
 {

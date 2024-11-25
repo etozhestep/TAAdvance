@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace TAF.Core;
+namespace TAF.Core.Configuration;
 
 public static class Configurator
 {

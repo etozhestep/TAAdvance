@@ -1,8 +1,9 @@
 using NLog;
 using OpenQA.Selenium;
+using TAF.Core.Configuration;
 using TAF.Core.Logger;
 
-namespace TAF.Core;
+namespace TAF.Core.Driver;
 
 public class Browser
 {
