@@ -7,7 +7,7 @@ jobs:
   build-solution:
     runs-on: ubuntu-latest
     env:
-      SOLUTION_PATH: ${{ github.workspace }}/TAAdvance/TAAdvance.sln
+      SOLUTION_PATH: ${{ github.workspace }}/TAAdvance.sln
     
     steps:
       - name: Checkout Repo
