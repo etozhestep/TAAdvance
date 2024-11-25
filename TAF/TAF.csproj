@@ -30,7 +30,6 @@
 
     <ItemGroup>
         <None Remove="Core\appsettings.json"/>
-        <None Remove=".gitignore"/>
     </ItemGroup>
 
     <ItemGroup>
