@@ -33,16 +33,15 @@
 
     <ItemGroup>
         <None Remove="Core\appsettings.json"/>
-        <None Remove=".gitignore" />
+        <None Remove=".gitignore"/>
     </ItemGroup>
 
     <ItemGroup>
         <Content Update="Core\Configuration\appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <None Remove="Core\Configuration\allureConfig.json" />
-        <Content Include="Core\Configuration\allureConfig.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Content Update="Core\Configuration\allureConfig.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 

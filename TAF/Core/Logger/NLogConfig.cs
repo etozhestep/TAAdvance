@@ -2,7 +2,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace TAF.Core;
+namespace TAF.Core.Logger;
 
 public static class NLogConfig
 {
