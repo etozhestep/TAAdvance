@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace TAF.Core;
+namespace TAF.Core.Util;
 
 public static class JsonUtil
 {
