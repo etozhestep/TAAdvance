@@ -1,9 +1,9 @@
 namespace TAF.Tests;
 
-public class DefaultTest
+public class NunitDefaultTest
 {
     [Test]
-    public void Test()
+    public void DefaultTest()
     {
         Assert.Pass();
     }
