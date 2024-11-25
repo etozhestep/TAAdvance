@@ -1,0 +1,5 @@
+!/Core/appsettings.Development.json
+.idea
+/bin/**
+/Debug/**
+
