@@ -1,13 +1,13 @@
 using NLog;
 using OpenQA.Selenium;
 using TAF.Core.Configuration;
-using TAF.Core.Logger;
+using TAF.Core.NLogger;
 
 namespace TAF.Core.Driver;
 
 public class Browser
 {
-    private readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public Browser()
     {

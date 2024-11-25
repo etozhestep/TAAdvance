@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 using TAF.Business.Pages;
 using TAF.Core.Util;
 
-namespace TAF.Business.Steps;
+namespace TAF.Business.Steps.Ui;
 
 /// <summary>
 ///     Base class for all steps. Contains common methods and properties.

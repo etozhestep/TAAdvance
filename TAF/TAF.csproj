@@ -33,11 +33,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Core\Configuration\appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <None Remove="Core\Configuration\allureConfig.json" />
+        <Content Include="Core\Configuration\allureConfig.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="Core\Configuration\allureConfig.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <None Remove="Core\Configuration\appsettings.json" />
+        <Content Include="Core\Configuration\appsettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
