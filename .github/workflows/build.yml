@@ -4,20 +4,21 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  env:
-    SOLUTION_PATH: ${{ github.workspace }}/TAAdvance/TAAdvance.sln
-  runs-on: ubuntu-latest
-  
-  steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+  build-solution:
+    runs-on: ubuntu-latest
+    env:
+      SOLUTION_PATH: ${{ github.workspace }}/TAAdvance/TAAdvance.sln
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Build
-      run: dotnet build ${{env.SOLUTION_PATH}}
+      - name: Build
+        run: dotnet build ${{env.SOLUTION_PATH}}
