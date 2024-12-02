@@ -7,9 +7,9 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     env:
-      SOLUTION_PATH: ${{ github.workspace }}/TAAdvance/TAAdvance.sln
-      PROJECT_PATH: ${{ github.workspace }}/TAAdvance/TAF/TAF.csproj
-      ALLURE_RESULTS_PATH: ${{ github.workspace }}/TAAdvance/TAF/bin/Debug/net8.0/allure-results
+      SOLUTION_PATH: ${{ github.workspace }}/TAAdvance.sln
+      PROJECT_PATH: ${{ github.workspace }}/TAF/TAF.csproj
+      ALLURE_RESULTS_PATH: ${{ github.workspace }}/TAF/bin/Debug/net8.0/allure-results
     
     steps:
       - name: Checkout Repo
