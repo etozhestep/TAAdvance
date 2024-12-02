@@ -27,7 +27,9 @@ public class LoginSteps(IWebDriver driver) : BaseStep(driver)
         else
         {
             Logger.Info("Entering credentials...");
+            loginPage.EmailField.Clear();
             loginPage.EmailField.SendText(email);
+            loginPage.PasswordField.Clear();
             loginPage.PasswordField.SendText(password);
             loginPage.SignInButton.Click();
         }

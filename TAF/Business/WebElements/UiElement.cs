@@ -16,7 +16,7 @@ public class UiElement : IWebElement
     protected readonly Actions Actions;
     protected readonly IWebDriver Driver;
     protected readonly By? Locator;
-    protected readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
     protected readonly Waits Waits;
     private IWebElement _element = null!;
 
