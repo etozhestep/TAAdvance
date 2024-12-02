@@ -19,12 +19,10 @@ public class NunitDdtLaunchesTests
     [TearDown]
     public void Clean()
     {
-        if (Driver.Value != null)
-        {
-            Driver.Value.Quit();
-            Driver.Value.Dispose();
-            Driver.Value = null;
-        }
+        if (Driver.Value == null) return;
+        Driver.Value.Quit();
+        Driver.Value.Dispose();
+        Driver.Value = null;
     }
 
     private static readonly ThreadLocal<IWebDriver?> Driver = new(() => new Browser().Driver);
