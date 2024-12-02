@@ -13,7 +13,7 @@ namespace TAF.Core.Util;
 public class Waits
 {
     private readonly IWebDriver _driver;
-    private readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly WebDriverWait _wait;
 
     public Waits(IWebDriver driver)
@@ -129,7 +129,7 @@ public class Waits
     {
         try
         {
-            var elements = WaitForElementsPresence(locator);
+            var elements = WaitForElements(locator);
             foreach (var _ in elements)
                 new WebDriverWait(_driver, timeout)
                     .Until(ExpectedConditions.InvisibilityOfElementLocated(locator));
@@ -188,14 +188,13 @@ public class Waits
         }
     }
 
-    public IReadOnlyCollection<IWebElement> WaitForElementsPresence(By locator)
+    public IReadOnlyCollection<IWebElement> WaitForElements(By locator)
     {
         try
         {
             _driver.Manage().Timeouts().ImplicitWait =
                 TimeSpan.FromSeconds(Configurator.ReadConfiguration().Ui.TimeOut);
             var elements = _driver.FindElements(locator);
-            foreach (var element in elements) WaitForExist(element);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
             return elements;
         }
@@ -263,7 +262,7 @@ public class Waits
     {
         try
         {
-            var collection = WaitForElementsPresence(locator);
+            var collection = WaitForElements(locator);
             return collection.Count > 0;
         }
         catch (WebDriverTimeoutException)

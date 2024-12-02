@@ -9,7 +9,7 @@ public class Field(IWebDriver driver, By locator) : UiElement(driver, locator)
 
     public bool IsDisplayed => _uiElement.Displayed;
     public bool IsEnabled => _uiElement.Enabled;
-    public string FieldText => _uiElement.Text;
+    public string? FieldText => _uiElement.Text;
 
     public void SendText(string? text)
     {

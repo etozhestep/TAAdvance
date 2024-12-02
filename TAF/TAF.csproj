@@ -10,9 +10,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Allure.NUnit" Version="2.12.1"/>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0"/>
+        <PackageReference Include="Meziantou.Xunit.ParallelTestFramework" Version="2.3.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="NLog" Version="5.3.4"/>
         <PackageReference Include="NUnit" Version="3.14.0"/>
@@ -22,24 +22,33 @@
         <PackageReference Include="Selenium.Support" Version="4.26.1"/>
         <PackageReference Include="Selenium.WebDriver" Version="4.26.1"/>
         <PackageReference Include="WebDriverManager" Version="2.17.4"/>
+        <PackageReference Include="xunit" Version="2.9.2"/>
+        <PackageReference Include="xunit.core" Version="2.9.2"/>
+        <PackageReference Include="xunit.runners" Version="2.0.0"/>
+        <PackageReference Include="xunit.analyzers" Version="1.17.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="NUnit.Framework"/>
-    </ItemGroup>
-
     <ItemGroup>
         <None Remove="Core\appsettings.json"/>
+        <None Update="Tests\TestData\launchesTestData.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Core\Configuration\allureConfig.json" />
+        <None Remove="Core\Configuration\allureConfig.json"/>
         <Content Include="Core\Configuration\allureConfig.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <None Remove="Core\Configuration\appsettings.json" />
+        <None Remove="Core\Configuration\appsettings.json"/>
         <Content Include="Core\Configuration\appsettings.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Core\Configuration\appsettings.Development.json"/>
+        <Content Include="Core\Configuration\appsettings.Development.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
