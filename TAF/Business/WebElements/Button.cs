@@ -18,7 +18,7 @@ public class Button(IWebDriver driver, By locator) : UiElement(driver, locator)
         }
     }
 
-    public string ButtonText => _uiElement.Text;
+    public string? ButtonText => _uiElement.Text;
 
     public new void Click()
     {
