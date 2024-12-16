@@ -8,11 +8,12 @@ using TAF.Core.Driver;
 using TAF.Core.Util;
 
 namespace TAF.Core;
+
 [Parallelizable(ParallelScope.All)]
 [Author("ASciapaniuk")]
 public class BaseTest
 {
-    protected readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
     protected IWebDriver? Driver;
     protected Waits Waits;
 

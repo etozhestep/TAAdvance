@@ -1,3 +1,4 @@
+using AF.Utils.Wrappers;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TAF.Business.WebElements;
@@ -12,6 +13,8 @@ public abstract class BasePage : LoadableComponent<BasePage>
 {
     private const string SideBarContentLocator = "//div[contains(@class,'sidebar-container')]";
     private static readonly By SideBarContentXpath = By.XPath(SideBarContentLocator);
+    private readonly By _notificationMessageXpath = By.XPath("//div[@data-automation-id='listItem']");
+    public readonly By LoadingSpinnerXpath = By.XPath("//div[contains(@class,'spinningPreloader')]");
 
     /// <summary>
     ///     Constructor contains driver instance. If ${openPageByUrl} true open base by base url + endpoint.
@@ -28,8 +31,8 @@ public abstract class BasePage : LoadableComponent<BasePage>
             EvaluateLoadedStatus();
     }
 
-    //public UserPopup UserPopup => new(Driver);
     public SideBar SideBar => new(Driver, SideBarContentXpath);
+    public Title NotificationMessage => new(Driver, _notificationMessageXpath);
     protected IWebDriver Driver { get; }
 
     /// <summary>

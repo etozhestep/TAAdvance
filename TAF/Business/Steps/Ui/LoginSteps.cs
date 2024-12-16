@@ -2,9 +2,11 @@ using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using TAF.Business.Pages;
 using TAF.Core.Configuration;
+using TechTalk.SpecFlow;
 
 namespace TAF.Business.Steps.Ui;
 
+[Binding]
 public class LoginSteps(IWebDriver driver) : BaseStep(driver)
 {
     /// <summary>
@@ -35,6 +37,7 @@ public class LoginSteps(IWebDriver driver) : BaseStep(driver)
     }
 
     [AllureStep("Login with valid credentials")]
+    [Given(@"Login with valid credentials")]
     public LaunchesPage LoginWithValidCredentials()
     {
         Logger.Info("Logging with valid credentials...");
@@ -42,5 +45,16 @@ public class LoginSteps(IWebDriver driver) : BaseStep(driver)
         var password = Configurator.ReadConfiguration().UserPassword;
         Login(username, password);
         return new LaunchesPage(Driver, true);
+    }
+    [Given(@"Open login page")]
+    public void OpenLoginPage()
+    {
+        _ = new LoginPage(Driver, true, true);
+    }
+
+    [When(@"I click login button")]
+    public void ClickLoginButton()
+    {
+        
     }
 }
