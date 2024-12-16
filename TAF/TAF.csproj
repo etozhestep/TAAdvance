@@ -40,12 +40,11 @@
 
     <ItemGroup>
         <None Remove="Core\Configuration\allureConfig.json"/>
-        <None Remove="Core\Configuration\appsettings.Development.json"/>
         <Content Include="Core\Configuration\allureConfig.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <None Remove="Core\Configuration\appsettings.json"/>
-        <Content Include="Core\Configuration\appsettings.Development.json">
+        <Content Include="Core\Configuration\appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
