@@ -7,7 +7,7 @@ namespace TAF.Core;
 [Binding]
 public class TestHooks
 {
-    protected static IWebDriver? Driver;
+    protected IWebDriver? Driver;
 
     [BeforeScenario]
     public void BeforeScenario(ScenarioContext scenarioContext)
@@ -16,7 +16,7 @@ public class TestHooks
     }
 
     [AfterScenario]
-    public static void AfterScenario()
+    public void AfterScenario()
     {
         Driver?.Quit();
     }

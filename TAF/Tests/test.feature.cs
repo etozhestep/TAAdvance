@@ -35,8 +35,8 @@ namespace TAF.Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Tests", "Filter launches by run name", "  In order to verify that the launch filtering works correctly\n  As a user of the" +
-                    " system\n  I want to filter launches by run name and see if they exist", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Tests", "Filter launches by run name", "  In order to verify that the launch filtering works correctly\r\n  As a user of th" +
+                    "e system\r\n  I want to filter launches by run name and see if they exist", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
