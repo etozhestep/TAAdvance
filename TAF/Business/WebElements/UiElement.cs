@@ -21,25 +21,25 @@ public class UiElement : IWebElement
     protected readonly Waits Waits;
     private IWebElement _element = null!;
 
-    private UiElement(IWebDriver? driver)
+    private UiElement(IWebDriver driver)
     {
         Driver = driver;
         Actions = new Actions(driver);
         Waits = new Waits(driver);
     }
 
-    public UiElement(IWebDriver? driver, IWebElement element) : this(driver)
+    public UiElement(IWebDriver driver, IWebElement element) : this(driver)
     {
         _element = element;
     }
 
-    public UiElement(IWebDriver? driver, By locator) : this(driver)
+    public UiElement(IWebDriver driver, By locator) : this(driver)
     {
         _element = Waits.WaitForExist(locator);
         Locator = locator;
     }
 
-    public UiElement(IWebDriver? driver, string xpath) : this(driver)
+    public UiElement(IWebDriver driver, string xpath) : this(driver)
     {
         _element = Waits.WaitForExist(By.XPath(xpath));
     }
@@ -145,7 +145,7 @@ public class UiElement : IWebElement
         {
             if (Locator is null)
                 throw;
-            _element = new UiElement(Driver, Locator);
+            _element = new UiElement(Driver!, Locator);
             _element.Click();
         }
     }

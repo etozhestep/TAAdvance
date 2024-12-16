@@ -58,16 +58,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Business\Steps\" />
+        <Folder Include="Business\Steps\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Tests\Features\FilterLaunchesTest.feature.cs">
-        <DependentUpon>FilterLaunchesTest.feature</DependentUpon>
-        <AutoGen>true</AutoGen>
-        <DesignTime>true</DesignTime>
-        <Visible>true</Visible>
-      </Compile>
+        <Compile Update="Tests\Features\FilterLaunchesTest.feature.cs">
+            <DependentUpon>FilterLaunchesTest.feature</DependentUpon>
+            <AutoGen>true</AutoGen>
+            <DesignTime>true</DesignTime>
+            <Visible>true</Visible>
+        </Compile>
     </ItemGroup>
 
 </Project>

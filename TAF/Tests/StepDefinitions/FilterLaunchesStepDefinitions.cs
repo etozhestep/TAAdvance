@@ -12,7 +12,7 @@ namespace TAF.Tests.StepDefinitions;
 public class FilterLaunchesStepDefinitions
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private static IWebDriver? Driver => Hooks.Driver.Value;
+    private static IWebDriver Driver => Hooks.Driver.Value!;
     private static Waits? Waits => Hooks.Waits.Value;
 
 

@@ -74,6 +74,18 @@ namespace TAF.Tests.Features
             testRunner.CollectScenarioErrors();
         }
         
+        public virtual void FeatureBackground()
+        {
+#line 6
+  #line hidden
+#line 7
+    testRunner.Given("open login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 8
+    testRunner.When("login with valid credentials", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+        }
+        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Filter page with run name")]
         [NUnit.Framework.TestCaseAttribute("null", "false", null)]
@@ -86,7 +98,7 @@ namespace TAF.Tests.Features
             argumentsOfScenario.Add("run_name", run_Name);
             argumentsOfScenario.Add("is_exist", is_Exist);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Filter page with run name", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 6
+#line 10
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -96,19 +108,16 @@ namespace TAF.Tests.Features
             else
             {
                 this.ScenarioStart();
-#line 7
-    testRunner.Given("I open login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 8
-    testRunner.And("login with valid credentials", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "* ");
-#line hidden
-#line 9
-    testRunner.And("I have opened the launches page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "* ");
-#line hidden
-#line 10
-    testRunner.When(string.Format("I filter launches by run name \'{0}\'", run_Name), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+  this.FeatureBackground();
 #line hidden
 #line 11
+    testRunner.Given("I have opened the launches page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 12
+    testRunner.When(string.Format("I filter launches by run name \'{0}\'", run_Name), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 13
     testRunner.Then(string.Format("the launch should be \'{0}\'", is_Exist), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

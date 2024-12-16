@@ -14,6 +14,6 @@ Feature: Filter launches by run name
 
     Examples:
       | run_name       | is_exist |
-      | null           | false     |
+      | null           | false    |
       | Demo Api Tests | true     |
-      | sios           | false     |
+      | sios           | false    |

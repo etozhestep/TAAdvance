@@ -45,7 +45,7 @@ public abstract class BasePage : LoadableComponent<BasePage>
     /// </summary>
     protected override void ExecuteLoad()
     {
-        Driver?.Navigate().GoToUrl(Configurator.ReadConfiguration().Url + GetEndpoint());
+        Driver.Navigate().GoToUrl(Configurator.ReadConfiguration().Url + GetEndpoint());
     }
 
     /// <summary>
