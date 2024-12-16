@@ -7,7 +7,7 @@ namespace TAF.Business.Pages;
 public class LaunchesPage(IWebDriver driver, bool evaluateStatus = false, bool openPageByUrl = false)
     : BasePage(driver, evaluateStatus, openPageByUrl)
 {
-    private const string Endpoint = "/ui/#default_personal/launches/all";
+    private const string Endpoint = "#default_personal/launches/all";
     private readonly By _addFilterButtonXpath = By.XPath("//*[contains(text(),'Add filter')]/parent::button");
     private readonly By _filterFieldXpath = By.XPath("//input[@placeholder='Enter name']");
     private readonly By _pageTitleXpath = By.XPath("//div[text()='All launches']");

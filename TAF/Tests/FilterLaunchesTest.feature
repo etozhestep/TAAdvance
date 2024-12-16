@@ -9,11 +9,11 @@ Feature: Filter launches by run name
 
   Scenario Outline: Filter page with run name
     Given I have opened the launches page
-    When I filter launches by run name "<run_name>"
-    Then the launch should be "<is_exist>"
+    When I filter launches by run name '<run_name>'
+    Then the launch should be '<is_exist>'
 
     Examples:
-      | run_name       | is_exist |
-      | null           | false    |
-      | Demo Api Tests | true     |
-      | ""             | false    |
+      | run_name         | is_exist |
+      | null             | false    |
+      | Demo Api Tests   | true     |
+      | result           | false    |

@@ -28,7 +28,7 @@ namespace TAF.Tests
         
         private static string[] featureTags = ((string[])(null));
         
-#line 1 "test.feature"
+#line 1 "FilterLaunchesTest.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
@@ -90,7 +90,7 @@ namespace TAF.Tests
         [NUnit.Framework.DescriptionAttribute("Filter page with run name")]
         [NUnit.Framework.TestCaseAttribute("null", "false", null)]
         [NUnit.Framework.TestCaseAttribute("Demo Api Tests", "true", null)]
-        [NUnit.Framework.TestCaseAttribute("\"\"", "false", null)]
+        [NUnit.Framework.TestCaseAttribute("resultIsNotExist", "false", null)]
         public void FilterPageWithRunName(string run_Name, string is_Exist, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -115,10 +115,10 @@ namespace TAF.Tests
     testRunner.Given("I have opened the launches page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
-    testRunner.When(string.Format("I filter launches by run name \"{0}\"", run_Name), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When(string.Format("I filter launches by run name \'{0}\'", run_Name), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 13
-    testRunner.Then(string.Format("the launch should be \"{0}\"", is_Exist), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then(string.Format("the launch should be \'{0}\'", is_Exist), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
