@@ -1,10 +1,9 @@
-using AF.Utils.Wrappers;
 using OpenQA.Selenium;
 using TAF.Business.WebElements;
 
 namespace TAF.Business.Pages;
 
-public class LaunchesPage(IWebDriver driver, bool evaluateStatus = false, bool openPageByUrl = false)
+public class LaunchesPage(IWebDriver? driver, bool evaluateStatus = false, bool openPageByUrl = false)
     : BasePage(driver, evaluateStatus, openPageByUrl)
 {
     private const string Endpoint = "#default_personal/launches/all";
@@ -20,7 +19,7 @@ public class LaunchesPage(IWebDriver driver, bool evaluateStatus = false, bool o
     {
         try
         {
-            return PageTitle is { IsDisplayed: true, Text: "All launches" } && Driver.Url.Contains(Endpoint);
+            return PageTitle is { IsDisplayed: true, Text: "All launches" } && Driver!.Url.Contains(Endpoint);
         }
         catch (WebDriverTimeoutException)
         {

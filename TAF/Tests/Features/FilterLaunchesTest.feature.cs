@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace TAF.Tests
+namespace TAF.Tests.Features
 {
     using TechTalk.SpecFlow;
     using System;
@@ -35,8 +35,8 @@ namespace TAF.Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Tests", "Filter launches by run name", "  In order to verify that the launch filtering works correctly\r\n  As a user of th" +
-                    "e system\r\n  I want to filter launches by run name and see if they exist", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Tests/Features", "Filter launches by run name", "  In order to verify that the launch filtering works correctly\n  As a user of the" +
+                    " system\n  I want to filter launches by run name and see if they exist", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -74,23 +74,11 @@ namespace TAF.Tests
             testRunner.CollectScenarioErrors();
         }
         
-        public virtual void FeatureBackground()
-        {
-#line 6
-  #line hidden
-#line 7
-    testRunner.Given("open login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 8
-    testRunner.When("login with valid credentials", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-        }
-        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Filter page with run name")]
         [NUnit.Framework.TestCaseAttribute("null", "false", null)]
         [NUnit.Framework.TestCaseAttribute("Demo Api Tests", "true", null)]
-        [NUnit.Framework.TestCaseAttribute("resultIsNotExist", "false", null)]
+        [NUnit.Framework.TestCaseAttribute("sios", "false", null)]
         public void FilterPageWithRunName(string run_Name, string is_Exist, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -98,7 +86,7 @@ namespace TAF.Tests
             argumentsOfScenario.Add("run_name", run_Name);
             argumentsOfScenario.Add("is_exist", is_Exist);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Filter page with run name", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 10
+#line 6
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -108,16 +96,19 @@ namespace TAF.Tests
             else
             {
                 this.ScenarioStart();
-#line 6
-  this.FeatureBackground();
+#line 7
+    testRunner.Given("I open login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 11
-    testRunner.Given("I have opened the launches page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 8
+    testRunner.And("login with valid credentials", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "* ");
 #line hidden
-#line 12
+#line 9
+    testRunner.And("I have opened the launches page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "* ");
+#line hidden
+#line 10
     testRunner.When(string.Format("I filter launches by run name \'{0}\'", run_Name), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 13
+#line 11
     testRunner.Then(string.Format("the launch should be \'{0}\'", is_Exist), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

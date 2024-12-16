@@ -1,10 +1,9 @@
-using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using TAF.Business.WebElements;
 
 namespace TAF.Business.Pages;
 
-public class LoginPage(IWebDriver driver, bool evaluateStatus = false, bool openPageByUrl = false)
+public class LoginPage(IWebDriver? driver, bool evaluateStatus = false, bool openPageByUrl = false)
     : BasePage(driver, evaluateStatus, openPageByUrl)
 {
     private static readonly string Endpoint = string.Empty;

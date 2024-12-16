@@ -13,7 +13,7 @@ Feature: Filter launches by run name
     Then the launch should be '<is_exist>'
 
     Examples:
-      | run_name         | is_exist |
-      | null             | false    |
-      | Demo Api Tests   | true     |
-      | result           | false    |
+      | run_name       | is_exist |
+      | null           | false     |
+      | Demo Api Tests | true     |
+      | sios           | false     |
