@@ -1,6 +1,7 @@
 ﻿using NLog;
 using OpenQA.Selenium;
 using TAF.Business.Pages;
+using TAF.Core.Configuration;
 using TAF.Core.Hooks;
 using TAF.Core.Util;
 using TechTalk.SpecFlow;
@@ -25,12 +26,12 @@ public class FilterLaunchesStepDefinitions
     [When(@"login with valid credentials")]
     public void WhenLoginWithValidCredentials()
     {
-        _logger.Info("Logging with valid credentials...");
-        // var username = Configurator.ReadConfiguration().UserEmail;
-        // var password = Configurator.ReadConfiguration().UserPassword;
+        _logger.Info("Logging with valid credentials..."); 
+        var username = Configurator.ReadConfiguration().UserEmail;
+        var password = Configurator.ReadConfiguration().UserPassword;
         var loginPage = new LoginPage(Driver, true, true);
-        // loginPage.EmailField.SendText(username);
-        // loginPage.PasswordField.SendText(password);
+        loginPage.EmailField.SendText(username);
+        loginPage.PasswordField.SendText(password);
         loginPage.SignInButton.Click();
         _ = new LaunchesPage(Driver, true);
     }
