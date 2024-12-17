@@ -1,7 +1,6 @@
 using OpenQA.Selenium;
-using TAF.Core.Util;
 
-namespace AF.Utils.Wrappers;
+namespace TAF.Business.WebElements;
 
 public class Title(IWebDriver driver, By locator) : UiElement(driver, locator)
 {

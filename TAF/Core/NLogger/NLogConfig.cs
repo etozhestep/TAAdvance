@@ -14,7 +14,7 @@ public static class NLogConfig
         var errorLogFile = new FileTarget("errorLogfile")
         {
             FileName = "ErrorLogFile.txt",
-            Layout = "${shortdate} * ${level} * ${message}",
+            Layout = "${date} * ${level} * ${message}",
             KeepFileOpen = false
         };
         var infoLogFile = new FileTarget("infoLogfile")

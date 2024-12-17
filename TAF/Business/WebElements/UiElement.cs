@@ -4,9 +4,10 @@ using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using TAF.Core.Configuration;
+using TAF.Core.Util;
 using Exception = System.Exception;
 
-namespace TAF.Core.Util;
+namespace TAF.Business.WebElements;
 
 /// <summary>
 ///     Wrapper for IWebElement interface with additional methods for working with elements.
@@ -14,9 +15,9 @@ namespace TAF.Core.Util;
 public class UiElement : IWebElement
 {
     protected readonly Actions Actions;
-    protected readonly IWebDriver Driver;
+    protected readonly IWebDriver? Driver;
     protected readonly By? Locator;
-    protected readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
     protected readonly Waits Waits;
     private IWebElement _element = null!;
 
@@ -51,7 +52,7 @@ public class UiElement : IWebElement
 
     public ReadOnlyCollection<IWebElement> FindElements(By by)
     {
-        Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Configurator.ReadConfiguration().Ui.TimeOut);
+        Driver!.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Configurator.ReadConfiguration().Ui.TimeOut);
         var collection = _element.FindElements(by);
         Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
         return collection;
@@ -137,14 +138,14 @@ public class UiElement : IWebElement
             catch (ElementNotInteractableException)
             {
                 MoveToElement();
-                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].Click();", _element);
+                ((IJavaScriptExecutor)Driver!).ExecuteScript("arguments[0].Click();", _element);
             }
         }
         catch (StaleElementReferenceException)
         {
             if (Locator is null)
                 throw;
-            _element = new UiElement(Driver, Locator);
+            _element = new UiElement(Driver!, Locator);
             _element.Click();
         }
     }
@@ -242,7 +243,7 @@ public class UiElement : IWebElement
         }
         catch (Exception)
         {
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", _element);
+            ((IJavaScriptExecutor)Driver!).ExecuteScript("arguments[0].scrollIntoView(true);", _element);
         }
     }
 }

@@ -42,7 +42,7 @@ public static class Configurator
 
     private static string GetConfigurationPath(RunType runType)
     {
-        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Core", "Configuration",
             runType == RunType.Local ? "appsettings.Development.json" : "appsettings.json");
     }
 }

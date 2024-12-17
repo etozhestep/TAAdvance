@@ -1,0 +1,12 @@
+{
+  "specFlow": {
+    "runtime": {
+      "execution": {
+        "parallelExecution": {
+          "testThreadCount": 4,
+          "syncronizeFixture": false
+        }
+      }
+    }
+  }
+}
