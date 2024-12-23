@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAF", "TAF\TAF.csproj", "{B1074C5E-844F-4C80-87E9-23F507BABFFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{239FA856-8519-4FAE-9FD4-2573D45B6F3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUnitTesting", "DotnetUnitTesting\DotnetUnitTesting.csproj", "{48FE0B15-8BDC-481D-AD68-F38F7077B8CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,10 +10,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B1074C5E-844F-4C80-87E9-23F507BABFFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1074C5E-844F-4C80-87E9-23F507BABFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1074C5E-844F-4C80-87E9-23F507BABFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1074C5E-844F-4C80-87E9-23F507BABFFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239FA856-8519-4FAE-9FD4-2573D45B6F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239FA856-8519-4FAE-9FD4-2573D45B6F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239FA856-8519-4FAE-9FD4-2573D45B6F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239FA856-8519-4FAE-9FD4-2573D45B6F3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48FE0B15-8BDC-481D-AD68-F38F7077B8CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48FE0B15-8BDC-481D-AD68-F38F7077B8CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48FE0B15-8BDC-481D-AD68-F38F7077B8CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48FE0B15-8BDC-481D-AD68-F38F7077B8CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
