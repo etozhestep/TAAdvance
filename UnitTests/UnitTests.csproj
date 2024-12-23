@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Downloads\DotnetUnitTesting\DotnetUnitTesting\DotnetUnitTesting.csproj"/>
+        <ProjectReference Include="..\DotnetUnitTesting\DotnetUnitTesting.csproj" />
     </ItemGroup>
 
 </Project>
