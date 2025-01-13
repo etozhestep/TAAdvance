@@ -13,7 +13,7 @@ namespace TAF.Core.Util;
 public class Waits
 {
     private readonly IWebDriver _driver;
-    private readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly WebDriverWait _wait;
 
     public Waits(IWebDriver driver)
