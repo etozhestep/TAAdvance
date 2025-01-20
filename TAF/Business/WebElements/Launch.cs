@@ -14,6 +14,7 @@ public class Launch(IWebDriver driver, IWebElement element) : UiElement(driver, 
 
     // Locators for test count data within a launch element
     private readonly By _totalTestsLocator = By.XPath(".//div[contains(@class,'launchSuiteGrid__total')]//a");
+    private readonly UiElement _uiElement = new(driver, element);
 
     public Button LaunchNameButton => new(Driver, _launchNameXpath);
 
@@ -42,7 +43,7 @@ public class Launch(IWebDriver driver, IWebElement element) : UiElement(driver, 
     {
         try
         {
-            var countElement = element.FindElement(locator);
+            var countElement = _uiElement.FindElement(locator);
             var countText = countElement.Text;
             if (int.TryParse(countText, out var count)) return count;
 
@@ -58,7 +59,7 @@ public class Launch(IWebDriver driver, IWebElement element) : UiElement(driver, 
 
     public void SelectLaunch()
     {
-        var checkbox = element.FindElement(_selectCheckboxXpath);
+        var checkbox = _uiElement.FindElement(_selectCheckboxXpath);
         if (!checkbox.GetAttribute("class")!.Contains("checked"))
             checkbox.Click();
     }
