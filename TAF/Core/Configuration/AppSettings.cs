@@ -13,14 +13,16 @@ public class AppSettings(
     [JsonProperty("API")] public Api Api { get; set; } = api;
     [JsonProperty("Email")] public string UserEmail { get; set; } = userEmail;
     [JsonProperty("Password")] public string UserPassword { get; set; } = userPassword;
+    public RunType RunType { get; set; }
     public string Url { get; set; } = url;
 }
 
-public class Ui(string? browserType, double timeOut)
+public class Ui(string browserType, double timeOut,string seleniumGridUrl)
 {
-    public string? BrowserType { get; set; } = browserType;
+    public string BrowserType { get; set; } = browserType;
 
     public double TimeOut { get; set; } = timeOut;
+    public string SeleniumGridUrl { get; set; } = seleniumGridUrl;
 }
 
 public class Api(string token)

@@ -1,4 +1,3 @@
-using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using TAF.Business.Pages;
 using TAF.Core.Configuration;
@@ -34,13 +33,11 @@ public class LoginSteps(IWebDriver driver) : BaseStep(driver)
         }
     }
 
-    [AllureStep("Login with valid credentials")]
-    public LaunchesPage LoginWithValidCredentials()
+    public void LoginWithValidCredentials()
     {
         Logger.Info("Logging with valid credentials...");
         var username = Configurator.ReadConfiguration().UserEmail;
         var password = Configurator.ReadConfiguration().UserPassword;
         Login(username, password);
-        return new LaunchesPage(Driver, true);
     }
 }

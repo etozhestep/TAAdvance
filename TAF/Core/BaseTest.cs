@@ -1,23 +1,25 @@
 using System.Reflection;
-using Allure.Net.Commons;
-using Allure.NUnit.Attributes;
 using NLog;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
+using TAF.Business.Steps.Ui;
 using TAF.Core.Driver;
 using TAF.Core.Util;
 
 namespace TAF.Core;
+
 [Parallelizable(ParallelScope.All)]
 [Author("ASciapaniuk")]
 public class BaseTest
 {
-    protected readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
-    protected IWebDriver? Driver;
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    protected IWebDriver Driver;
+    protected LaunchesSteps LaunchesSteps;
+    protected LoginSteps LoginSteps;
+    protected NavigationSteps NavigationSteps;
     protected Waits Waits;
 
     [SetUp]
-    [AllureBefore("Start the browser")]
     public void Setup()
     {
         Logger.Info($"Executing {TestContext.CurrentContext.Test.Name}");
@@ -25,6 +27,9 @@ public class BaseTest
         // Create a new instance of the browser and waits class
         Driver = new Browser().Driver;
         Waits = new Waits(Driver);
+        LoginSteps = new LoginSteps(Driver);
+        NavigationSteps = new NavigationSteps(Driver);
+        LaunchesSteps = new LaunchesSteps(Driver);
     }
 
     /// <summary>
@@ -46,10 +51,10 @@ public class BaseTest
                 "ErrorLogFile.txt");
 
             // Upload logs
-            if (File.Exists(infoLogFile))
-                AllureApi.AddAttachment("InfoLogFile", "text/plain", infoLogFile);
-            if (File.Exists(errorLogFile))
-                AllureApi.AddAttachment("ErrorLogFile", "text/plain", errorLogFile);
+            // if (File.Exists(infoLogFile))
+            //     AllureApi.AddAttachment("InfoLogFile", "text/plain", infoLogFile);
+            // if (File.Exists(errorLogFile))
+            //     AllureApi.AddAttachment("ErrorLogFile", "text/plain", errorLogFile);
 
             // Verify if the test failed
             if (TestContext.CurrentContext.Result.Outcome.Status is not TestStatus.Failed) return;
@@ -57,7 +62,7 @@ public class BaseTest
             if (Driver is null) return;
             Logger.Info("Making screenshot...");
             var screenshotByte = MakeScreenshot();
-            AllureApi.AddAttachment("screenshot", "image/png", screenshotByte);
+            //AllureApi.AddAttachment("screenshot", "image/png", screenshotByte);
         }
         finally
         {
