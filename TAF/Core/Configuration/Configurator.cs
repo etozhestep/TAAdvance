@@ -10,9 +10,9 @@ public static class Configurator
     public static AppSettings ReadConfiguration()
     {
         if (_appSettings is not null) return _appSettings;
-        var runType = GetRunType();
+        _appSettings!.RunType = GetRunType();
 
-        var appSettingPath = GetConfigurationPath(runType);
+        var appSettingPath = GetConfigurationPath();
         var appSettingsText = File.ReadAllText(appSettingPath);
 
         if (JsonUtil.IsValidJson<AppSettings>(appSettingsText))
@@ -32,7 +32,7 @@ public static class Configurator
         return _appSettings;
     }
 
-    public static RunType GetRunType()
+    private static RunType GetRunType()
     {
         var runType = Environment.GetEnvironmentVariable("RUN_TYPE");
         if (!string.IsNullOrEmpty(runType) && runType.Equals("Remote"))
@@ -40,9 +40,9 @@ public static class Configurator
         return RunType.Local;
     }
 
-    private static string GetConfigurationPath(RunType runType)
+    private static string GetConfigurationPath()
     {
-        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-            runType == RunType.Local ? "appsettings.Development.json" : "appsettings.json");
+        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Core", "Configuration",
+            _appSettings?.RunType == RunType.Local ? "appsettings.Development.json" : "appsettings.json");
     }
 }

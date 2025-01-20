@@ -1,8 +1,10 @@
+using System.Collections.ObjectModel;
 using System.Reflection;
 using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using TAF.Business.WebElements;
 using TAF.Core.Configuration;
 
 namespace TAF.Core.Util;
@@ -13,7 +15,7 @@ namespace TAF.Core.Util;
 public class Waits
 {
     private readonly IWebDriver _driver;
-    private readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly WebDriverWait _wait;
 
     public Waits(IWebDriver driver)
@@ -188,7 +190,7 @@ public class Waits
         }
     }
 
-    public IReadOnlyCollection<IWebElement> WaitForElementsPresence(By locator)
+    public ReadOnlyCollection<IWebElement> WaitForElementsPresence(By locator)
     {
         try
         {
@@ -275,5 +277,16 @@ public class Waits
     public IWebElement WaitForClickable(IWebElement element)
     {
         return _wait.Until(ExpectedConditions.ElementToBeClickable(element));
+    }
+
+    public IWebElement WaitForElementFluently(By locator)
+    {
+        var fluentWait = new DefaultWait<IWebDriver>(_driver)
+        {
+            Timeout = TimeSpan.FromSeconds(Configurator.ReadConfiguration().Ui.TimeOut),
+            PollingInterval = TimeSpan.FromMilliseconds(500)
+        };
+        fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(ElementNotVisibleException));
+        return fluentWait.Until(driver => driver.FindElement(locator));
     }
 }

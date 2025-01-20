@@ -1,4 +1,3 @@
-using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using TAF.Business.WebElements;
 
@@ -16,7 +15,6 @@ public class LoginPage(IWebDriver driver, bool evaluateStatus = false, bool open
     public Field PasswordField => new(Driver, _passwordFieldXpath);
     public Button SignInButton => new(Driver, _signInButtonXpath);
 
-    [AllureStep("Evaluating the loaded status of the Login page")]
     protected override bool EvaluateLoadedStatus()
     {
         try

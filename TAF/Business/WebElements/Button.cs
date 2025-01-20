@@ -1,11 +1,20 @@
 using OpenQA.Selenium;
-using TAF.Core.Util;
 
 namespace TAF.Business.WebElements;
 
-public class Button(IWebDriver driver, By locator) : UiElement(driver, locator)
+public class Button : UiElement
 {
-    private readonly UiElement _uiElement = new(driver, locator);
+    private readonly UiElement _uiElement;
+
+    public Button(IWebDriver driver, IWebElement element) : base(driver, element)
+    {
+        _uiElement = new UiElement(Driver, element);
+    }
+
+    public Button(IWebDriver driver, By locator) : base(driver, locator)
+    {
+        _uiElement = new UiElement(Driver, locator);
+    }
 
     public bool IsDisplayed => _uiElement.Displayed;
 

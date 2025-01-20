@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Allure.NUnit" Version="2.12.1"/>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
@@ -33,11 +32,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Core\Configuration\allureConfig.json" />
+        <None Remove="Core\Configuration\allureConfig.json"/>
         <Content Include="Core\Configuration\allureConfig.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <None Remove="Core\Configuration\appsettings.json" />
+        <None Remove="Core\Configuration\appsettings.json"/>
         <Content Include="Core\Configuration\appsettings.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
