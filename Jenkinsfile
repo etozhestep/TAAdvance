@@ -16,7 +16,12 @@ pipeline {
 
         stage('Tests') {
             steps {
-                sh 'dotnet test TAAdvance.sln'
+                sh 'dotnet test TAAdvance.sln --logger "trx;LogFileName=test-results.trx"'
+            }
+            post {
+                always {
+                    junit '**/*.trx'
+                }
             }
         }
     }
