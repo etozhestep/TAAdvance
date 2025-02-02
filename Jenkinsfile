@@ -22,14 +22,14 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/master']],
+                    branches: [[name: '*/main']],
                     extensions: [
                         [$class: 'CloneOption', depth: 0, noTags: false, shallow: false],
                         [$class: 'CleanBeforeCheckout']
                     ],
                     userRemoteConfigs: [[
                         url: 'git@github.com:https://github.com/etozhestep/TAAdvance.git',
-                        credentialsId: 'testuser'
+                        credentialsId: 'git'
                     ]]
                 ])
             }
