@@ -7,8 +7,8 @@ pipeline {
     }
     
     triggers {
-        pollSCM('* * * * *')  // Автоматический триггер при коммитах в master
-        cron('0 0 * * *')     // Ежедневная сборка в 00:00
+        pollSCM('* * * * *') 
+        cron('0 0 * * *')     
     }
     
     environment {
@@ -28,8 +28,8 @@ pipeline {
                         [$class: 'CleanBeforeCheckout']
                     ],
                     userRemoteConfigs: [[
-                        url: 'git@github.com:your-account/your-repo.git',
-                        credentialsId: 'jenkins-github-ssh'
+                        url: 'git@github.com:https://github.com/etozhestep/TAAdvance.git',
+                        credentialsId: 'testuser'
                     ]]
                 ])
             }
@@ -73,7 +73,7 @@ pipeline {
                 always {
                     junit 'TestResults/**/*.trx'
                     script {
-                        // Интеграция с Jira
+                        // Jira
                         def testResults = readJSON text: sh(script: 'cat TestResults/*.trx', returnStdout: true)
                         jiraUpdateIssue site: 'JIRA_SITE',
                             issueKey: "${JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
@@ -100,9 +100,9 @@ pipeline {
     
     post {
         always {
-            // Отправка в Report Portal
+            // 
             reportPortalPublisher(
-                endpoint: 'https://report-portal.example',
+                endpoint: 'http://localhost:9090/',
                 tokenCredentialsId: 'report-portal-token',
                 launchName: 'TAAdvance Build ${env.BUILD_NUMBER}',
                 logPattern: '**/*.log',
@@ -110,7 +110,7 @@ pipeline {
                 description: 'Automated build and test run'
             )
             
-            // Очистка workspace
+            
             cleanWs()
         }
         
