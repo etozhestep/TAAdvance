@@ -29,7 +29,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 sh '''
-                dotnet test ${SOLUTION_PATH} \
+                dotnet test ${PROJECT_PATH} \
                     --results-directory TestResults \
                     --filter "Category=Unit"
                 '''
