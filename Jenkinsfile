@@ -8,7 +8,7 @@ pipeline {
     
     environment {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
-        PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
+        PROJECT_PATH = "${WORKSPACE}/TAAdvance/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'https://taadnvance.atlassian.net/'
         JIRA_PROJECT_KEY = 'jira-creds'
