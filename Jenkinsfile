@@ -42,6 +42,18 @@ pipeline {
             }
         }
         
+        stage('List Files') {
+            steps {
+                script {
+                    def folderPath = "${WORKSPACE}/TAAdvance"
+                    sh """
+                        echo "Files ${folderPath}:"
+                        ls -la ${folderPath}
+                    """
+                }
+            }
+        }
+        
         stage('Update Jira') {
             steps {
                 script {
