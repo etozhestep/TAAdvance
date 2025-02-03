@@ -26,6 +26,19 @@ pipeline {
                 sh 'dotnet build ${SOLUTION_PATH}'
             }
         }
+        stage('List Files') {
+            steps {
+                script {
+                    
+                    def folderPath = "${WORKSPACE}/TAAdvance"
+
+                    sh """
+                        echo "Файлы в папке ${folderPath}:"
+                        ls -la ${folderPath}
+                    """
+                }
+            }
+        }
         
         stage('Run Tests') {
             steps {
