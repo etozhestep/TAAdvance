@@ -4,9 +4,10 @@ using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using TAF.Core.Configuration;
+using TAF.Core.Util;
 using Exception = System.Exception;
 
-namespace TAF.Core.Util;
+namespace TAF.Business.WebElements;
 
 /// <summary>
 ///     Wrapper for IWebElement interface with additional methods for working with elements.
@@ -16,7 +17,7 @@ public class UiElement : IWebElement
     protected readonly Actions Actions;
     protected readonly IWebDriver Driver;
     protected readonly By? Locator;
-    protected readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
     protected readonly Waits Waits;
     private IWebElement _element = null!;
 
@@ -34,7 +35,7 @@ public class UiElement : IWebElement
 
     public UiElement(IWebDriver driver, By locator) : this(driver)
     {
-        _element = Waits.WaitForExist(locator);
+        _element = Waits.WaitForElementFluently(locator);
         Locator = locator;
     }
 
@@ -65,14 +66,7 @@ public class UiElement : IWebElement
         }
         catch (Exception)
         {
-            try
-            {
-                _element.SendKeys("");
-            }
-            catch (Exception)
-            {
-                ClearAll();
-            }
+            _element.SendKeys("");
         }
     }
 
@@ -84,11 +78,15 @@ public class UiElement : IWebElement
     {
         try
         {
+            Logger.Info($"Sending keys '{text}' to element: {Locator}");
+
             Clear();
             _element.SendKeys(text);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Logger.Error(ex, $"Failed to send keys to element: {Locator}");
+
             Clear();
             Actions
                 .MoveToElement(_element)
@@ -121,6 +119,7 @@ public class UiElement : IWebElement
     {
         try
         {
+            Logger.Info($"Clicking on element: {Locator}");
             Hover();
             _element.Click();
         }
@@ -128,6 +127,8 @@ public class UiElement : IWebElement
         {
             try
             {
+                Logger.Warn("Element not interactable directly, attempting with Actions.");
+
                 Actions
                     .MoveToElement(_element)
                     .Click()
@@ -136,12 +137,16 @@ public class UiElement : IWebElement
             }
             catch (ElementNotInteractableException)
             {
+                Logger.Warn("Element not interactable directly, attempting with JS Executor.");
+
                 MoveToElement();
                 ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].Click();", _element);
             }
         }
         catch (StaleElementReferenceException)
         {
+            Logger.Warn("Element not interactable directly, attempting to find this element again.");
+
             if (Locator is null)
                 throw;
             _element = new UiElement(Driver, Locator);
@@ -214,17 +219,14 @@ public class UiElement : IWebElement
         }
     }
 
-    private void ClearAll()
-    {
-        _element.SendKeys(Keys.Control + "a");
-        _element.SendKeys(Keys.Backspace);
-    }
 
     /// <summary>
     ///     Moves the cursor to the element and then hovers over the element.
     /// </summary>
     private void Hover()
     {
+        Logger.Info($"Hovering on element {Locator}");
+
         Actions
             .MoveToElement(_element)
             .Build()
@@ -244,5 +246,38 @@ public class UiElement : IWebElement
         {
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", _element);
         }
+    }
+
+    /// <summary>
+    ///     Drag and drop a element on targetElement
+    /// </summary>
+    /// <param name="targetElement"></param>
+    public void DragAndDrop(UiElement targetElement)
+    {
+        Logger.Info($"Dragging element {Locator} to {targetElement}");
+        MoveToElement();
+
+        Actions
+            .ClickAndHold(_element)
+            .MoveToElement(targetElement._element)
+            .Release()
+            .Build()
+            .Perform();
+    }
+
+    /// <summary>
+    ///     Resize element
+    /// </summary>
+    /// <param name="offsetX"></param>
+    /// <param name="offsetY"></param>
+    public void Resize(int offsetX, int offsetY)
+    {
+        Logger.Info(
+            $"Resizing element {Locator} by offsetX: {offsetX}, offsetY: {offsetY}");
+        Actions.ClickAndHold(_element)
+            .MoveByOffset(offsetX, offsetY)
+            .Release()
+            .Build()
+            .Perform();
     }
 }
