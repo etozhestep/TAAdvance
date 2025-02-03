@@ -15,18 +15,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([
+                checkout(
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     extensions: [
                         [$class: 'CloneOption', depth: 0, noTags: false, shallow: false],
                         [$class: 'CleanBeforeCheckout']
-                    ],
-                    userRemoteConfigs: [[
-                        url: 'git@github.com:etozhestep/TAAdvance.git',
-                        credentialsId: 'a1e2623d-a8af-4bc6-a10d-6c843cd5c82e'
-                    ]]
-                ])
+                    )
             }
         }
         
