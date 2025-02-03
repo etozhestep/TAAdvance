@@ -8,6 +8,7 @@ pipeline {
     
     environment {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
+        PROJECT_PATH = "${WORKSPACE}/TAAdvance/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_PROJECT_KEY = 'TA'
     }
@@ -44,7 +45,7 @@ pipeline {
         stage('UI Tests') {
             steps {
                 sh '''
-                dotnet test ${SOLUTION_PATH} \
+                dotnet test ${PROJECT_PATH} \
                     --results-directory TestResults \
                     --filter "Category=UI"
                 '''
