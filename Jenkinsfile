@@ -24,7 +24,7 @@ pipeline {
                     ],
                     userRemoteConfigs: [[
                         url: 'git@github.com:etozhestep/TAAdvance.git',
-                        credentialsId: 'git'
+                        credentialsId: 'a1e2623d-a8af-4bc6-a10d-6c843cd5c82e'
                     ]]
                 ])
             }
