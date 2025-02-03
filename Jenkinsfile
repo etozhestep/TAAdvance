@@ -11,12 +11,13 @@ pipeline {
         PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'https://taadnvance.atlassian.net/'
+        JIRA_PROJECT_KEY = 'jira-creds'
     }
     
     stages {
         stage('Checkout') {
             steps {
-                 checkout scm
+                checkout scm
             }
         }
         
@@ -31,21 +32,17 @@ pipeline {
                 sh '''
                 dotnet test ${PROJECT_PATH} \
                     --results-directory TestResults \
+                    --logger "trx;LogFileName=test-results.trx"
                 '''
             }
             post {
                 always {
                     junit 'TestResults/**/*.trx'
-                    script {
-                        def testResults = readJSON text: sh(script: 'cat TestResults/*.trx', returnStdout: true)
-                        jiraUpdateIssue site: 'JIRA_SITE',
-                            issueKey: "${JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
-                            testResults: testResults
-                    }
                 }
             }
         }
-         stage('Update Jira Issues') {
+        
+        stage('Update Jira Issues') {
             when {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
@@ -62,8 +59,6 @@ pipeline {
             }
         }
     }
-        
-    }
     
     post {
         always {
@@ -76,7 +71,6 @@ pipeline {
                 description: 'Automated build and test run'
             )
             
-        
             cleanWs()
         }
     }
