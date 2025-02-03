@@ -11,7 +11,7 @@ pipeline {
         PROJECT_PATH = "${WORKSPACE}/TAAdvance/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'https://taadnvance.atlassian.net/'
-        JIRA_PROJECT_KEY = 'jira-creds'
+        JIRA_PROJECT_KEY = 'TA'
     }
     
     stages {
@@ -26,31 +26,18 @@ pipeline {
                 sh 'dotnet build ${SOLUTION_PATH}'
             }
         }
-        stage('List Files') {
-            steps {
-                script {
-                    
-                    def folderPath = "${WORKSPACE}/TAAdvance"
-
-                    sh """
-                        echo "Файлы в папке ${folderPath}:"
-                        ls -la ${folderPath}
-                    """
-                }
-            }
-        }
         
         stage('Run Tests') {
             steps {
                 sh '''
-                dotnet test ${PROJECT_PATH} \
-                    --results-directory TestResults \
-                    --logger "trx;LogFileName=test-results.trx"
+                    dotnet test ${PROJECT_PATH} \
+                        --results-directory TestResults \
+                        --logger "nunit;LogFileName=TestResults/test-results.xml"
                 '''
             }
             post {
                 always {
-                    nunit 'TestResults/**/*.xml' 
+                    nunit testResultsPattern: 'TestResults/**/*.xml' 
                 }
             }
         }
@@ -61,13 +48,13 @@ pipeline {
                     def xmlFile = readFile('TestResults/test-results.xml')
                     def parsedXml = new XmlSlurper().parseText(xmlFile)
             
-                    def passed = parsedXml['test-case'].findAll { it.@result == 'Passed' }.size()
-                    def failed = parsedXml['test-case'].findAll { it.@result == 'Failed' }.size()
+                    def passed = parsedXml.'test-suite'.'test-case'.findAll { it.@result == 'Passed' }.size()
+                    def failed = parsedXml.'test-suite'.'test-case'.findAll { it.@result == 'Failed' }.size()
             
                     jiraAddComment(
-                        site: 'JIRA_SITE',
-                        issueKey: 'TA-123',
-                        comment: "Test results: Passed: ${passed}, Failed: ${failed}"
+                        site: env.JIRA_SITE,
+                        issueKey: "${env.JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
+                        comment: "Test results: passed: ${passed}, failed: ${failed}"
                     )
                 }
             }
@@ -79,12 +66,10 @@ pipeline {
             reportPortalPublisher(
                 endpoint: 'http://localhost:9090/',
                 tokenCredentialsId: 'report-portal-token',
-                launchName: 'TAAdvance Build ${env.BUILD_NUMBER}',
+                launchName: "TAAdvance Build ${env.BUILD_NUMBER}",
                 logPattern: '**/*.log',
-                tags: ['CI', 'TAAdvance'],
-                description: 'Automated build and test run'
+                tags: ['CI', 'TAAdvance']
             )
-            
             cleanWs()
         }
     }
