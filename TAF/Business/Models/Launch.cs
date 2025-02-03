@@ -26,5 +26,5 @@ public class Attribute
 
 public class RootLaunches
 {
-    [JsonProperty("Content")] public List<Launch> Launches { get; set; }
+    [JsonProperty("Content")] public List<Launch>? Launches { get; set; }
 }
