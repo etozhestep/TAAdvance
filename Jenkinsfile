@@ -21,6 +21,12 @@ pipeline {
             }
         }
         
+    stage('Clean') {
+        steps {
+           sh 'dotnet clean'
+           }
+        }
+        
         stage('Build') {
             steps {
                 sh 'dotnet build ${SOLUTION_PATH}'
