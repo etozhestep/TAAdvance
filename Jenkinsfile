@@ -50,23 +50,24 @@ pipeline {
             }
             post {
                 always {
-                    junit 'TestResults/**/*.trx'
+                    nunit 'TestResults/**/*.xml' 
                 }
             }
         }
         
-        stage('Update Jira Issues') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Update Jira') {
             steps {
                 script {
-                    def testResults = readJSON text: sh(script: 'cat TestResults/*.trx', returnStdout: true)
-                    
-                    jiraSendTestResults(
-                        site: env.JIRA_SITE,
-                        testResults: testResults,
-                        issueKeys: findJiraIssues().key.join(',')
+                    def xmlFile = readFile('TestResults/test-results.xml')
+                    def parsedXml = new XmlSlurper().parseText(xmlFile)
+            
+                    def passed = parsedXml['test-case'].findAll { it.@result == 'Passed' }.size()
+                    def failed = parsedXml['test-case'].findAll { it.@result == 'Failed' }.size()
+            
+                    jiraAddComment(
+                        site: 'JIRA_SITE',
+                        issueKey: 'TA-123',
+                        comment: "Test results: Passed: ${passed}, Failed: ${failed}"
                     )
                 }
             }
