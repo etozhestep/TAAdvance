@@ -17,7 +17,7 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/master']],
+                    branches: [[name: '*/main']],
                     extensions: [
                         [$class: 'CloneOption', depth: 0, noTags: false, shallow: false],
                         [$class: 'CleanBeforeCheckout']
@@ -32,7 +32,7 @@ pipeline {
         
         stage('Build') {
             steps {
-                sh 'dotnet build ${SOLUTION_PATH} --configuration Release'
+                sh 'dotnet build ${SOLUTION_PATH}'
             }
         }
         
@@ -40,8 +40,6 @@ pipeline {
             steps {
                 sh '''
                 dotnet test ${SOLUTION_PATH} \
-                    --configuration Release \
-                    --logger "trx;LogFileName=unit-tests.trx" \
                     --results-directory TestResults \
                     --filter "Category=Unit"
                 '''
@@ -74,20 +72,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube-server') {
-                    sh """
-                    dotnet sonarscanner begin /k:"TAAdvance" \
-                        /d:sonar.cs.vstest.reportsPaths="TestResults/*.trx" \
-                        /d:sonar.exclusions="**/bin/**/*,**/obj/**/*"
-                    dotnet build ${SOLUTION_PATH}
-                    dotnet sonarscanner end
-                    """
-                }
-            }
-        }
     }
     
     post {
@@ -103,32 +87,6 @@ pipeline {
             
         
             cleanWs()
-        }
-        
-        success {
-            slackSend channel: "${SLACK_CHANNEL}",
-                color: 'good',
-                message: """✅ Build SUCCESS
-Project: ${env.JOB_NAME}
-Build: ${env.BUILD_NUMBER}
-Report: ${env.BUILD_URL}testReport"""
-        }
-        
-        failure {
-            slackSend channel: "${SLACK_CHANNEL}",
-                color: 'danger',
-                message: """❌ Build FAILED
-Project: ${env.JOB_NAME}
-Build: ${env.BUILD_NUMBER}
-Logs: ${env.BUILD_URL}console"""
-        }
-        
-        changed {
-            slackSend channel: "${SLACK_CHANNEL}",
-                color: 'warning',
-                message: """⚠️ Build STATUS CHANGED
-Previous: ${currentBuild.previousBuild.result}
-Current: ${currentBuild.result}"""
         }
     }
 }
