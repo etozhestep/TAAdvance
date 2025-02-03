@@ -10,7 +10,7 @@ pipeline {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
         PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
-        JIRA_PROJECT_KEY = 'TA'
+        JIRA_SITE = 'https://taadnvance.atlassian.net/'
     }
     
     stages {
@@ -26,28 +26,11 @@ pipeline {
             }
         }
         
-        stage('Unit Tests') {
+        stage('Run Tests') {
             steps {
                 sh '''
                 dotnet test ${PROJECT_PATH} \
                     --results-directory TestResults \
-                    --filter "Category=Unit"
-                '''
-            }
-            post {
-                always {
-                    junit 'TestResults/**/*.trx'
-                    archiveArtifacts artifacts: 'TestResults/**/*', allowEmptyArchive: true
-                }
-            }
-        }
-        
-        stage('UI Tests') {
-            steps {
-                sh '''
-                dotnet test ${PROJECT_PATH} \
-                    --results-directory TestResults \
-                    --filter "Category=UI"
                 '''
             }
             post {
@@ -62,6 +45,24 @@ pipeline {
                 }
             }
         }
+         stage('Update Jira Issues') {
+            when {
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                script {
+                    def testResults = readJSON text: sh(script: 'cat TestResults/*.trx', returnStdout: true)
+                    
+                    jiraSendTestResults(
+                        site: env.JIRA_SITE,
+                        testResults: testResults,
+                        issueKeys: findJiraIssues().key.join(',')
+                    )
+                }
+            }
+        }
+    }
+        
     }
     
     post {
