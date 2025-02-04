@@ -12,6 +12,8 @@ pipeline {
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
+        SONAR_HOST_URL = 'http://localhost:7070'
+        SONAR_LOGIN = credentials('sonarqube-token')
     }
 
     stages {
@@ -38,29 +40,41 @@ pipeline {
                 sh 'dotnet build ${SOLUTION_PATH}'
             }
         }
+        
+         stage('SonarQube Analysis') {
+                    steps {
+                        withSonarQubeEnv('SonarQube') {
+                            sh "dotnet sonarscanner begin /k:\"${env.JOB_NAME}\" /d:sonar.host.url=\"${SONAR_HOST_URL}\" /d:sonar.login=\"${SONAR_LOGIN}\""
+                            sh "dotnet build ${SOLUTION_PATH}"
+                            sh "dotnet sonarscanner end /d:sonar.login=\"${SONAR_LOGIN}\""
+                        }
+                    }
+                }
 
         stage('Test') {
-            steps {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
-                }
-            }
-            post {
-                always {
-                    xunit(
-                        tools: [
-                            MSTest(
-                                pattern: '**/test_results.trx',
-                                skipNoTestFiles: false,
-                                failIfNotNew: false,
-                                deleteOutputFiles: true,
-                                stopProcessingIfError: false
+                    steps {
+                        withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
+                            catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            xunit(
+                                tools: [
+                                    MSTest(
+                                        pattern: '**/test_results.trx',
+                                        skipNoTestFiles: false,
+                                        failIfNotNew: false,
+                                        deleteOutputFiles: true,
+                                        stopProcessingIfError: false
+                                    )
+                                ]
                             )
-                        ]
-                    )
+                        }
+                    }
                 }
-            }
-        }
 
         stage('Update Jira') {
             steps {
