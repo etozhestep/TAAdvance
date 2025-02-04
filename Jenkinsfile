@@ -39,20 +39,17 @@ pipeline {
             }
         }
         
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    dotnet test ${PROJECT_PATH} \
-                        --results-directory TestResults \
-                        --logger "nunit;LogFileName=TestResults/test-results.xml"
-                '''
-            }
-            post {
-                always {
-                    nunit testResultsPattern: 'TestResults/**/*.xml' 
+        stage('Test') {
+                    steps {
+                        sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
+                    }
+                    post {
+                        always {
+                            // Publish the test results
+                            nunit testResultsPattern: '**/test_results.trx'
+                        }
+                    }
                 }
-            }
-        }
         
         stage('List Files') {
             steps {
