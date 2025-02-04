@@ -23,18 +23,6 @@ pipeline {
             }
         }
 
-        stage('Clean') {
-            steps {
-                sh 'dotnet clean'
-            }
-        }
-
-        stage('Restore') {
-            steps {
-                sh 'dotnet restore'
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
