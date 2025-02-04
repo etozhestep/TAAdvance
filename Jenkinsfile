@@ -16,7 +16,8 @@ pipeline {
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
-        REPORT_PORTAL_URL = 'http://172.23.0.15:9090/api/v1'
+        REPORT_PORTAL_URL = 'http://172.23.0.15:9090
+        RP_ATTRIBUTES = 'k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A'
         PATH = "${env.PATH}:/root/.dotnet/tools"
     }
 
@@ -25,10 +26,8 @@ pipeline {
             steps {
                 script {
                     hook = registerWebhook()
-                    env.ENCODED_URL = sh(
-                        script: "echo -n ${hook.getURL()} | base64 -w 0",
-                        returnStdout: true
-                    ).trim()
+                    echo "Webhook Registration Response: ${hook.dump()}"
+                    env.ENCODED_URL = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
                     echo "Webhook URL: ${hook.getURL()}"
                     echo "Encoded URL: ${env.ENCODED_URL}"
                 }
@@ -64,29 +63,21 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        sh """
-                            dotnet test '${PROJECT_PATH}' \
-                                --logger \"trx;LogFileName=./TestResults/test_results.trx\" \
-                                /p:RP.APIBaseUrl=\"${REPORT_PORTAL_URL}\" \
-                                /p:RP.UUID=\"${RP_API_TOKEN}\" \
-                                /p:RP.LaunchName=\"TAAdvance_Build_${env.BUILD_NUMBER}\" \
-                                /p:RP.attributes=\"k1:v1\\;k2:v2\\;rp.webhook.key:${env.ENCODED_URL}\"
-                        """
+                        sh label: 'Run Tests with RP', script: """
+                    dotnet test '${PROJECT_PATH}' \
+                        --logger "trx;LogFileName=./TestResults/test_results.trx" \
+                        /p:RP.APIBaseUrl="${REPORT_PORTAL_URL}" \
+                        /p:RP.UUID="${RP_API_TOKEN}" \
+                        /p:RP.LaunchName="TAAdvance_Build_${env.BUILD_NUMBER}" \
+                        /p:RP.attributes='k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A${env.ENCODED_URL}'
+                """
                     }
                 }
             }
             post {
                 always {
                     xunit(
-                        tools: [
-                            MSTest(
-                                pattern: '**/TestResults/test_results.trx',
-                                skipNoTestFiles: false,
-                                failIfNotNew: false,
-                                deleteOutputFiles: true,
-                                stopProcessingIfError: true
-                            )
-                        ]
+                        tools: [MSTest(pattern: '**/TestResults/test_results.trx')]
                     )
                 }
             }
