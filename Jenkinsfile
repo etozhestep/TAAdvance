@@ -59,8 +59,8 @@ pipeline {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                             sh """
                                 dotnet test ${PROJECT_PATH} \
-                                    --logger \"trx;LogFileName=./TestResults/test_results.trx\" \
-                                    /p:RP.attributes='k1:v1\;k2:v2\;rp.webhook.key:${env.ENCODED_URL}'
+                                    --logger "trx;LogFileName=./TestResults/test_results.trx" \
+                                    /p:RP.attributes='k1:v1\\;k2:v2\\;rp.webhook.key:${env.ENCODED_URL}'
                             """
                         }
                     }
