@@ -5,8 +5,8 @@ pipeline {
         string(name: 'TIMEOUT_UNIT', defaultValue: 'SECONDS', description: 'Time unit for the timeout')
     }
     triggers {
-        pollSCM('* * * * *') 
-        cron('0 0 * * *')  
+        pollSCM('* * * * *')
+        cron('0 0 * * *')
     }
 
     environment {
@@ -16,7 +16,7 @@ pipeline {
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
-        REPORT_PORTAL_URL = 'https://http://172.23.0.15:9090/api/v1'
+        REPORT_PORTAL_URL = 'http://172.23.0.15:9090/api/v1'
         PATH = "${env.PATH}:/root/.dotnet/tools"
     }
 
@@ -24,15 +24,17 @@ pipeline {
         stage('Setup Webhook') {
             steps {
                 script {
-                    hook = registerWebhook() 
+                    hook = registerWebhook()
                     env.ENCODED_URL = sh(
-                        script: "echo -n ${hook.getURL()} | base64 -w 0", 
+                        script: "echo -n ${hook.getURL()} | base64 -w 0",
                         returnStdout: true
                     ).trim()
+                    echo "Webhook URL: ${hook.getURL()}"
+                    echo "Encoded URL: ${env.ENCODED_URL}"
                 }
             }
         }
-            
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -68,7 +70,7 @@ pipeline {
                                 /p:RP.APIBaseUrl=\"${REPORT_PORTAL_URL}\" \
                                 /p:RP.UUID=\"${RP_API_TOKEN}\" \
                                 /p:RP.LaunchName=\"TAAdvance_Build_${env.BUILD_NUMBER}\" \
-                                /p:RP.attributes=\"k1:v1;k2:v2;rp.webhook.key:${env.ENCODED_URL}\"
+                                /p:RP.attributes=\"k1:v1\\;k2:v2\\;rp.webhook.key:${env.ENCODED_URL}\"
                         """
                     }
                 }
@@ -97,7 +99,7 @@ pipeline {
                         echo 'Waiting for RP processing...'
                         def data = waitForWebhook hook
                         echo "Processing finished... ${data}"
-                        
+
                         def jsonData = readJSON text: data
                         if (jsonData['status'] != 'PASSED') {
                             error("Quality Gate failed: ${jsonData['status']}")
