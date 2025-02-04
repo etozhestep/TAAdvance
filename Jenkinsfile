@@ -79,31 +79,6 @@ pipeline {
                                )
                            }
                        }
-                   
-//         stage('Test') {
-//             steps {
-//                 withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
-//                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-//                         sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     xunit(
-//                         tools: [
-//                             MSTest(
-//                                 pattern: '**/test_results.trx',
-//                                 skipNoTestFiles: false,
-//                                 failIfNotNew: false,
-//                                 deleteOutputFiles: true,
-//                                 stopProcessingIfError: false
-//                             )
-//                         ]
-//                     )
-//                 }
-//             }
-//         }
 
         stage('Update Jira') {
             steps {
@@ -141,4 +116,5 @@ pipeline {
                     }
                 }
     }
+}
 }
