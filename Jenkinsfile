@@ -26,7 +26,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
-                    withEnv(["PATH+DOTNET=/root/.dotnet/tools"]) {
+                    withEnv(["PATH=${env.PATH}:/var/jenkins_home/.dotnet/tools"]) {
                         sh '''
                             dotnet sonarscanner begin /k:"TAAdvance" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
                         '''
