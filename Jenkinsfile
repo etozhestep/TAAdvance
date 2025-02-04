@@ -10,7 +10,7 @@ pipeline {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
         PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
         SLACK_CHANNEL = '#ci-cd'
-        JIRA_SITE = 'https://taadnvance.atlassian.net/'
+        JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
     }
 
