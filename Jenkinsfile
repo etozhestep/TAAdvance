@@ -13,6 +13,8 @@ pipeline {
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
         SONAR_HOST_URL = 'http://localhost:7070'
+        PATH = "${env.PATH}:/root/.dotnet/tools"
+
     }
 
     stages {
@@ -42,15 +44,12 @@ pipeline {
         
          stage('SonarQube Analysis') {
              steps {
-                 withSonarQubeEnv('SonarQube') {
-                     withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
-                         // Begin analysis
+                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
+                     withEnv(["PATH+DOTNET=/root/.dotnet/tools"]) {
                          sh '''
                              dotnet sonarscanner begin /k:"${JOB_NAME}" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
                          '''
-                         // Build the solution
-                         sh "dotnet build ${SOLUTION_PATH}"
-                         // End analysis
+                         sh "dotnet build '${SOLUTION_PATH}'"
                          sh '''
                              dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
                          '''
