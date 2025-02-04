@@ -24,7 +24,7 @@ public class Attribute
     [JsonProperty("system")] public bool System { get; set; }
 }
 
-public class RootLaunches
+public class RootLaunches(List<Launch> launches)
 {
-    [JsonProperty("Content")] public List<Launch>? Launches { get; set; }
+    [JsonProperty("Content")] public List<Launch> Launches { get; set; } = launches;
 }
