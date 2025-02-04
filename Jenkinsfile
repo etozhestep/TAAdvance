@@ -16,6 +16,7 @@ pipeline {
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
+        REPORT_PORTAL_URL = 'https://http://172.23.0.15:9090/api/v1'
         PATH = "${env.PATH}:/root/.dotnet/tools"
     }
 
@@ -23,9 +24,11 @@ pipeline {
         stage('Setup Webhook') {
             steps {
                 script {
-                    def hook = registerWebhook()
-                    def encodedUrl = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
-                    env.ENCODED_URL = encodedUrl
+                    hook = registerWebhook() 
+                    env.ENCODED_URL = sh(
+                        script: "echo -n ${hook.getURL()} | base64 -w 0", 
+                        returnStdout: true
+                    ).trim()
                 }
             }
         }
@@ -53,16 +56,20 @@ pipeline {
         }
 
         stage('Test') {
+            environment {
+                RP_API_TOKEN = credentials('report-portal-token')
+            }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_TOKEN')]) {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                            sh """
-                                dotnet test ${PROJECT_PATH} \
-                                    --logger "trx;LogFileName=./TestResults/test_results.trx" \
-                                    /p:RP.attributes='k1:v1\\;k2:v2\\;rp.webhook.key:${env.ENCODED_URL}'
-                            """
-                        }
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh """
+                            dotnet test '${PROJECT_PATH}' \
+                                --logger \"trx;LogFileName=./TestResults/test_results.trx\" \
+                                /p:RP.APIBaseUrl=\"${REPORT_PORTAL_URL}\" \
+                                /p:RP.UUID=\"${RP_API_TOKEN}\" \
+                                /p:RP.LaunchName=\"TAAdvance_Build_${env.BUILD_NUMBER}\" \
+                                /p:RP.attributes=\"k1:v1;k2:v2;rp.webhook.key:${env.ENCODED_URL}\"
+                        """
                     }
                 }
             }
@@ -83,6 +90,23 @@ pipeline {
             }
         }
 
+        stage('Wait for Webhook') {
+            steps {
+                script {
+                    timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
+                        echo 'Waiting for RP processing...'
+                        def data = waitForWebhook hook
+                        echo "Processing finished... ${data}"
+                        
+                        def jsonData = readJSON text: data
+                        if (jsonData['status'] != 'PASSED') {
+                            error("Quality Gate failed: ${jsonData['status']}")
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Update Jira') {
             steps {
                 script {
@@ -98,21 +122,6 @@ pipeline {
                         issueKey: "${env.JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
                         comment: "Test results: passed: ${passed}, failed: ${failed}"
                     )
-                }
-            }
-        }
-
-        stage('Wait for Webhook') {
-            steps {
-                script {
-                    timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
-                        echo 'Waiting for RP processing...'
-                        def data = waitForWebhook hook
-                        echo "Processing finished... ${data}"
-                        
-                        def jsonData = readJSON text: data
-                        assert jsonData['status'] == 'PASSED'
-                    }
                 }
             }
         }
