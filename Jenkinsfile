@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    parameters {
+        string(name: 'TIMEOUT_TIME', defaultValue: '30', description: 'Timeout duration for waiting webhook data')
+        string(name: 'TIMEOUT_UNIT', defaultValue: 'SECONDS', description: 'Time unit for the timeout')
+    }
     triggers {
         pollSCM('* * * * *') 
         cron('0 0 * * *')  
@@ -17,6 +20,16 @@ pipeline {
     }
 
     stages {
+        stage('Setup Webhook') {
+                steps {
+                    script {
+                        def hook = registerWebhook()
+                        def encodedUrl = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
+                        env.ENCODED_URL = encodedUrl
+                    }
+                }
+            }
+            
         stage('Checkout') {
             steps {
                 checkout scm
@@ -39,30 +52,58 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
-                    }
-                }
-            }
-            post {
-                always {
-                    xunit(
-                        tools: [
-                            MSTest(
-                                pattern: '**/test_results.trx',
-                                skipNoTestFiles: false,
-                                failIfNotNew: false,
-                                deleteOutputFiles: true,
-                                stopProcessingIfError: false
-                            )
-                        ]
-                    )
-                }
-            }
-        }
+           stage('Test') {
+                       steps {
+                           script {
+                               withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_TOKEN')]) {
+                                   catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                       sh """
+                                           dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=./TestResults/test_results.trx" /p:RP.attributes='k1:v1;k2:v2;rp.webhook.key:${env.ENCODED_URL}'
+                                       """
+                                   }
+                               }
+                           }
+                       }
+                       post {
+                           always {
+                               xunit(
+                                   tools: [
+                                       MSTest(
+                                           pattern: '**/TestResults/test_results.trx',
+                                           skipNoTestFiles: false,
+                                           failIfNotNew: false,
+                                           deleteOutputFiles: true,
+                                           stopProcessingIfError: true
+                                       )
+                                   ]
+                               )
+                           }
+                       }
+                   
+//         stage('Test') {
+//             steps {
+//                 withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
+//                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+//                         sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
+//                     }
+//                 }
+//             }
+//             post {
+//                 always {
+//                     xunit(
+//                         tools: [
+//                             MSTest(
+//                                 pattern: '**/test_results.trx',
+//                                 skipNoTestFiles: false,
+//                                 failIfNotNew: false,
+//                                 deleteOutputFiles: true,
+//                                 stopProcessingIfError: false
+//                             )
+//                         ]
+//                     )
+//                 }
+//             }
+//         }
 
         stage('Update Jira') {
             steps {
@@ -85,18 +126,19 @@ pipeline {
                 }
             }
         }
-    }
-
-    post {
-        always {
-            reportPortalPublisher(
-                endpoint: 'http://reportportal:9090/',
-                tokenCredentialsId: 'report-portal-token',
-                launchName: "TAAdvance Build ${env.BUILD_NUMBER}",
-                logPattern: '**/*.log',
-                tags: ['CI', 'TAAdvance']
-            )
-            cleanWs()
-        }
+        stage('Wait for Webhook') {
+                    steps {
+                        script {
+                            timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
+                                echo 'Waiting for RP processing...'
+                                def data = waitForWebhook hook
+                                echo "Processing finished... ${data}"
+                                
+                                def jsonData = readJSON text: data
+                                assert jsonData['status'] == 'PASSED'
+                            }
+                        }
+                    }
+                }
     }
 }
