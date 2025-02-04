@@ -12,9 +12,8 @@ pipeline {
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
-        SONAR_HOST_URL = 'http://localhost:7070'
+        SONAR_HOST_URL = 'http://sonarqube:9000'
         PATH = "${env.PATH}:/root/.dotnet/tools"
-
     }
 
     stages {
@@ -26,62 +25,56 @@ pipeline {
 
         stage('Clean') {
             steps {
-               sh 'dotnet clean'
+                sh 'dotnet clean'
             }
         }
 
         stage('Restore') {
             steps {
-               sh 'dotnet restore'
+                sh 'dotnet restore'
             }
         }
 
-        stage('Build') {
+        stage('SonarQube Analysis') {
             steps {
-                sh 'dotnet build ${SOLUTION_PATH}'
-            }
-        }
-        
-         stage('SonarQube Analysis') {
-             steps {
-                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
-                     withEnv(["PATH+DOTNET=/root/.dotnet/tools"]) {
-                         sh '''
-                             dotnet sonarscanner begin /k:"${JOB_NAME}" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
-                         '''
-                         sh "dotnet build '${SOLUTION_PATH}'"
-                         sh '''
-                             dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
-                         '''
-                     }
-                 }
-             }
-         }
-
-        stage('Test') {
-                    steps {
-                        withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
-                            catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
-                            }
-                        }
-                    }
-                    post {
-                        always {
-                            xunit(
-                                tools: [
-                                    MSTest(
-                                        pattern: '**/test_results.trx',
-                                        skipNoTestFiles: false,
-                                        failIfNotNew: false,
-                                        deleteOutputFiles: true,
-                                        stopProcessingIfError: false
-                                    )
-                                ]
-                            )
-                        }
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_LOGIN')]) {
+                    withEnv(["PATH+DOTNET=/root/.dotnet/tools"]) {
+                        sh '''
+                            dotnet sonarscanner begin /k:"TAAdvance" /d:sonar.host.url="${SONAR_HOST_URL}" /d:sonar.login="${SONAR_LOGIN}"
+                        '''
+                        sh "dotnet build '${SOLUTION_PATH}'"
+                        sh '''
+                            dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
+                        '''
                     }
                 }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
+                    }
+                }
+            }
+            post {
+                always {
+                    xunit(
+                        tools: [
+                            MSTest(
+                                pattern: '**/test_results.trx',
+                                skipNoTestFiles: false,
+                                failIfNotNew: false,
+                                deleteOutputFiles: true,
+                                stopProcessingIfError: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
 
         stage('Update Jira') {
             steps {
@@ -109,7 +102,7 @@ pipeline {
     post {
         always {
             reportPortalPublisher(
-                endpoint: 'http://localhost:9090/',
+                endpoint: 'http://reportportal:9090/',
                 tokenCredentialsId: 'report-portal-token',
                 launchName: "TAAdvance Build ${env.BUILD_NUMBER}",
                 logPattern: '**/*.log',
