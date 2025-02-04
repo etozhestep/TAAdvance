@@ -12,7 +12,7 @@ pipeline {
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
-        SONAR_HOST_URL = 'http://sonarqube:9000'
+        SONAR_HOST_URL = 'http://my-sonarqube:9000'
         PATH = "${env.PATH}:/root/.dotnet/tools"
     }
 
