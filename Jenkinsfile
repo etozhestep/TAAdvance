@@ -21,14 +21,14 @@ pipeline {
 
     stages {
         stage('Setup Webhook') {
-                steps {
-                    script {
-                        def hook = registerWebhook()
-                        def encodedUrl = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
-                        env.ENCODED_URL = encodedUrl
-                    }
+            steps {
+                script {
+                    def hook = registerWebhook()
+                    def encodedUrl = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
+                    env.ENCODED_URL = encodedUrl
                 }
             }
+        }
             
         stage('Checkout') {
             steps {
@@ -52,72 +52,45 @@ pipeline {
             }
         }
 
-           stage('Test') {
-                       steps {
-                           script {
-                               withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_TOKEN')]) {
-                                   catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                       sh """
-                                           dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=./TestResults/test_results.trx" /p:RP.attributes='k1:v1;k2:v2;rp.webhook.key:${env.ENCODED_URL}'
-                                       """
-                                   }
-                               }
-                           }
-                       }
-                       post {
-                           always {
-                               xunit(
-                                   tools: [
-                                       MSTest(
-                                           pattern: '**/TestResults/test_results.trx',
-                                           skipNoTestFiles: false,
-                                           failIfNotNew: false,
-                                           deleteOutputFiles: true,
-                                           stopProcessingIfError: true
-                                       )
-                                   ]
-                               )
-                           }
-                       }
-                   
-//         stage('Test') {
-//             steps {
-//                 withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
-//                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-//                         sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     xunit(
-//                         tools: [
-//                             MSTest(
-//                                 pattern: '**/test_results.trx',
-//                                 skipNoTestFiles: false,
-//                                 failIfNotNew: false,
-//                                 deleteOutputFiles: true,
-//                                 stopProcessingIfError: false
-//                             )
-//                         ]
-//                     )
-//                 }
-//             }
-//         }
+        stage('Test') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_TOKEN')]) {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                            sh """
+                                dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=./TestResults/test_results.trx" /p:RP.attributes='k1:v1;k2:v2;rp.webhook.key:${env.ENCODED_URL}'
+                            """
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    xunit(
+                        tools: [
+                            MSTest(
+                                pattern: '**/TestResults/test_results.trx',
+                                skipNoTestFiles: false,
+                                failIfNotNew: false,
+                                deleteOutputFiles: true,
+                                stopProcessingIfError: true
+                            )
+                        ]
+                    )
+                }
+            }
+        }
 
         stage('Update Jira') {
             steps {
                 script {
-                    // Adjust the path to your .trx file
-                    def trxContent = readFile('test_results.trx')
+                    def trxContent = readFile('TestResults/test_results.trx')
                     def parsedXml = new XmlSlurper().parseText(trxContent)
 
-                    // Parse the .trx file
                     def results = parsedXml.'Results'.'UnitTestResult'
                     def passed = results.findAll { it.@outcome == 'Passed' }.size()
                     def failed = results.findAll { it.@outcome == 'Failed' }.size()
 
-                    // Add a comment to Jira
                     jiraAddComment(
                         site: env.JIRA_SITE,
                         issueKey: "${env.JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
@@ -126,19 +99,20 @@ pipeline {
                 }
             }
         }
+
         stage('Wait for Webhook') {
-                    steps {
-                        script {
-                            timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
-                                echo 'Waiting for RP processing...'
-                                def data = waitForWebhook hook
-                                echo "Processing finished... ${data}"
-                                
-                                def jsonData = readJSON text: data
-                                assert jsonData['status'] == 'PASSED'
-                            }
-                        }
+            steps {
+                script {
+                    timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
+                        echo 'Waiting for RP processing...'
+                        def data = waitForWebhook hook
+                        echo "Processing finished... ${data}"
+                        
+                        def jsonData = readJSON text: data
+                        assert jsonData['status'] == 'PASSED'
                     }
                 }
+            }
+        }
     }
 }
