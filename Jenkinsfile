@@ -43,12 +43,21 @@ pipeline {
                     steps {
                         sh 'dotnet test ${PROJECT_PATH} --logger "trx;LogFileName=test_results.trx"'
                     }
-                    post {
-                        always {
-                            // Publish the test results
-                            nunit testResultsPattern: '**/test_results.trx'
+                     post {
+                            always {
+                                xunit(
+                                    tools: [
+                                        NUnit3(
+                                            pattern: '**/test_results.trx',
+                                            skipNoTestFiles: false,
+                                            failIfNotNew: false,
+                                            deleteOutputFiles: true,
+                                            stopProcessingIfError: true
+                                        )
+                                    ]
+                                )
+                            }
                         }
-                    }
                 }
         
         stage('List Files') {
