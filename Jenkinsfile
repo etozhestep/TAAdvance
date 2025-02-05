@@ -46,27 +46,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Setting Up ReportPortal') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def configFilePath = env.RP_CONFIG_PATH
-                        def config = readJSON file: configFilePath
-
-                        config.rp.api.key = token
-                        config.rp.launch = "JENKINS_DEMO_${JOB_BASE_NAME}"
-                        config.rp.description = "${JOB_URL}${BUILD_NUMBER}"
-                        config.rp.attributes = ["Cucumber:${JOB_BASE_NAME}"]
-
-                        writeJSON file: configFilePath, json: config
-
-                        echo "Updated content of ${configFilePath}:"
-                        echo readFile(configFilePath)
-                    }
-                }
-            }
-        }
 
         stage('Test') {
             environment {
