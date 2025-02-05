@@ -16,6 +16,7 @@ pipeline {
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
         PATH = "${env.PATH}:/root/.dotnet/tools"
         RP_CREDS = 'report-portal-token'
+        TEST_RESULT_FILE = "${WORKSPACE}/TAF/TestResults/test_results.trx"
     }
 
     stages {
@@ -51,7 +52,7 @@ pipeline {
                                 export RP_PROJECT="${REPORTPORTAL_PROJECT}"
                                 export RP_UUID="${RP_UUID}"
                                 dotnet test "${PROJECT_PATH}" \
-                                   --logger "trx;LogFileName=./TestResults/test_results.trx"
+                                   --logger "trx;LogFileName=${TEST_RESULT_FILE}"
                             '''
                         }
                     }
@@ -63,7 +64,7 @@ pipeline {
                     xunit(
                         tools: [
                             MSTest(
-                                pattern: '**/TestResults/test_results.trx',
+                                pattern: '${TEST_RESULT_FILE}',
                                 skipNoTestFiles: false,
                                 failIfNotNew: false,     
                                 deleteOutputFiles: true, 
@@ -78,7 +79,7 @@ pipeline {
         stage('Update Jira') {
             steps {
                 script {
-                    def trxContent = readFile('TestResults/test_results.trx')
+                    def trxContent = readFile('${TEST_RESULT_FILE}')
                     def parsedXml = new XmlSlurper().parseText(trxContent)
 
                     def results = parsedXml.'Results'.'UnitTestResult'

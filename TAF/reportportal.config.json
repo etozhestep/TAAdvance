@@ -11,7 +11,7 @@
   "launch": {
     "name": "TAAdvance Tests",
     "description": "Test launch description",
-    "debugMode": false,
+    "debugMode": true,
     "tags": [ "CI" ]
   }
 }
