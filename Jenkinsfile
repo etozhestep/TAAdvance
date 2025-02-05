@@ -25,6 +25,11 @@ pipeline {
                 checkout scm
             }
         }
+        steps('Clean'){
+            steps{
+                sh ''' dotnet clean '''
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
