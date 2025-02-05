@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'TIMEOUT_TIME', defaultValue: '30', description: 'Timeout duration for waiting webhook data')
-        string(name: 'TIMEOUT_UNIT', defaultValue: 'SECONDS', description: 'Time unit for the timeout')
-    }
     triggers {
         pollSCM('* * * * *')
         cron('0 0 * * *')
