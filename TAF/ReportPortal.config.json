@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/reportportal/agent-net-nunit/master/src/ReportPortal.NUnitExtension/ReportPortal.config.schema",
   "enabled": true,
   "server": {
-    "url": "http://reportportal-ui-1:8080/api/v1",
+    "url": "http://reportportal-api-1:8585/api/v1",
     "project": "default_personal",
-    "apiKey": "${RP_UUID}"
+    "apiKey": "test_7k14EfsKQxumgB1KbWFt8K-qxDfQXryvXInPp7CBo7wrnOt1zo1uAND0ww87dpQk"
   },
   "launch": {
     "name": "TAAdvance Tests",
