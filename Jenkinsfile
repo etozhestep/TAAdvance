@@ -12,6 +12,7 @@ pipeline {
     environment {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
         PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
+        RP_CONFIG_PATH = "${WORKSPACE}/TAF/reportportal.config.json"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
@@ -50,7 +51,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def configFilePath = "${WORKSPACE}/TAAdvance/TAF/reportportal.config.json"
+                        def configFilePath = env.RP_CONFIG_PATH
                         def config = readJSON file: configFilePath
 
                         config.rp.api.key = token
