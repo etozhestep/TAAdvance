@@ -75,24 +75,5 @@ pipeline {
                 }
             }
         }
-        
-        stage('Update Jira') {
-            steps {
-                script {
-                    def trxContent = readFile('${TEST_RESULT_FILE}')
-                    def parsedXml = new XmlSlurper().parseText(trxContent)
-
-                    def results = parsedXml.'Results'.'UnitTestResult'
-                    def passed = results.findAll { it.@outcome == 'Passed' }.size()
-                    def failed = results.findAll { it.@outcome == 'Failed' }.size()
-
-                    jiraAddComment(
-                        site: env.JIRA_SITE,
-                        issueKey: "${env.JIRA_PROJECT_KEY}-${env.BUILD_NUMBER}",
-                        comment: "Test results: passed: ${passed}, failed: ${failed}"
-                    )
-                }
-            }
-        }
     }
 }
