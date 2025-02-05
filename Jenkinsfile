@@ -64,7 +64,7 @@ pipeline {
                     xunit(
                         tools: [
                             MSTest(
-                                pattern: '${TEST_RESULT_FILE}',
+                                pattern: '**/TestResults/test_results.trx',
                                 skipNoTestFiles: false,
                                 failIfNotNew: false,     
                                 deleteOutputFiles: true, 
