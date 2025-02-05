@@ -43,7 +43,7 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <None Remove="reportportal.config.json" />
-        <Content Include="reportportal.config.json">
+        <Content Include="ReportPortal.config.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
