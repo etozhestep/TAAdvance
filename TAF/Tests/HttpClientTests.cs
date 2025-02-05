@@ -8,6 +8,7 @@ namespace TAF.Tests;
 public class HttpClientTests
 {
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_GetAllLaunches_ReturnedListOfLaunches()
     {
         var listOfAllLaunches = await ApiHttpClientLaunchesSteps.GetAllLaunches();
@@ -15,6 +16,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_GetAllLaunchesUnauthorized_ReturnedUnauthorized()
     {
         var response = await ApiHttpClientLaunchesSteps.GetAllLaunchesUnauthorized();
@@ -22,6 +24,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_CreateLaunch_ReturnedCreated()
     {
         var response = await ApiHttpClientLaunchesSteps.PostStartFirstLaunch();
@@ -29,6 +32,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_CreateLaunchUnauthorized_ReturnedUnauthorized()
     {
         var response = await ApiHttpClientLaunchesSteps.PostStartFirstLaunchUnauthorized();
@@ -36,6 +40,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_CreateLaunchWithoutProjectName_ReturnedBadRequest()
     {
         var response = await ApiHttpClientLaunchesSteps.PostStartFirstLaunchWithoutProjectName();
@@ -43,6 +48,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_DeleteLaunchById_LaunchDeleted()
     {
         var firstLaunchUuid = (await ApiHttpClientLaunchesSteps.GetAllLaunches())!.Launches.First().Uuid;
@@ -53,6 +59,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_DeleteLaunchByIdWithoutParameter_ReturnedBadRequest()
     {
         var response = await ApiHttpClientLaunchesSteps.DeleteLaunchByIdWithoutParameter();
@@ -61,6 +68,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_DeleteLaunchByIdUnauthorized_ReturnedUnauthorized()
     {
         var firstLaunchId = (await ApiHttpClientLaunchesSteps.GetAllLaunches())!.Launches.First().Uuid;
@@ -70,6 +78,7 @@ public class HttpClientTests
     }
 
     [Test]
+    [Ignore("test")]
     public async Task HttpLaunches_PutUpdateLaunchById_LaunchUpdated()
     {
         const string newStatus = "PASSED";

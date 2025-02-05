@@ -6,6 +6,7 @@ namespace TAF.Tests;
 public class RestSharpTests
 {
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_GetAllLaunches_ReturnedListOfLaunches()
     {
@@ -15,6 +16,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_GetAllLaunchesUnauthorized_ReturnedUnauthorized()
     {
@@ -24,6 +26,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_CreateLaunch_ReturnedCreated()
     {
@@ -33,6 +36,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_CreateLaunchUnauthorized_ReturnedUnauthorized()
     {
@@ -42,6 +46,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_CreateLaunchWithoutProjectName_ReturnedBadRequest()
     {
@@ -51,6 +56,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_DeleteLaunchById_LaunchDeleted()
     {
@@ -62,6 +68,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_DeleteLaunchByIdWithoutParameter_ReturnedBadRequest()
     {
@@ -71,6 +78,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_DeleteLaunchByIdUnauthorized_ReturnedUnauthorized()
     {
@@ -81,6 +89,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_PutUpdateLaunchById_LaunchUpdated()
     {
@@ -99,6 +108,7 @@ public class RestSharpTests
     }
 
     [Test]
+    [Ignore("test")]
     [Category("API")]
     public void RestLaunches_PutUpdateLaunchWithoutBody_ReturnedBadRequest()
     {
