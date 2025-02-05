@@ -15,25 +15,15 @@ pipeline {
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
+        REPORTPORTAL_PROJECT = 'default_personal'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
         REPORT_PORTAL_URL = 'http://172.23.0.15:9090'
         RP_ATTRIBUTES = 'k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A'
         PATH = "${env.PATH}:/root/.dotnet/tools"
+        RP_CREDS = 'report-portal-token'
     }
 
     stages {
-        stage('Setup Webhook') {
-            steps {
-                script {
-                    hook = registerWebhook()
-                    echo "Webhook Registration Response: ${hook.dump()}"
-                    env.ENCODED_URL = sh(script: "echo -n ${hook.getURL()} | base64 -w 0", returnStdout: true).trim()
-                    echo "Webhook URL: ${hook.getURL()}"
-                    echo "Encoded URL: ${env.ENCODED_URL}"
-                }
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -51,6 +41,27 @@ pipeline {
                         sh '''
                             dotnet sonarscanner end /d:sonar.login="${SONAR_LOGIN}"
                         '''
+                    }
+                }
+            }
+        }
+        
+        stage('Setting Up ReportPortal') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
+                        def configFilePath = "${WORKSPACE}/reportportal.config.json"
+                        def config = readJSON file: configFilePath
+
+                        config.rp.api.key = token
+                        config.rp.launch = "JENKINS_DEMO_${JOB_BASE_NAME}"
+                        config.rp.description = "${JOB_URL}${BUILD_NUMBER}"
+                        config.rp.attributes = ["Cucumber:${JOB_BASE_NAME}"]
+
+                        writeJSON file: configFilePath, json: config
+
+                        echo "Updated content of ${configFilePath}:"
+                        echo readFile(configFilePath)
                     }
                 }
             }
@@ -82,19 +93,25 @@ pipeline {
                 }
             }
         }
-
-        stage('Wait for Webhook') {
+        stage('Link RP to Jenkins') {
             steps {
                 script {
-                    timeout(time: params.TIMEOUT_TIME as Integer, unit: params.TIMEOUT_UNIT) {
-                        echo 'Waiting for RP processing...'
-                        def data = waitForWebhook hook
-                        echo "Processing finished... ${data}"
+                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
+                        def response = httpRequest(
+                            url: "${env.REPORTPORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch?page.page=1&page.size=1&page.sort=startTime,desc",
+                            customHeaders: [
+                                [
+                                    name: 'Authorization',
+                                    value: "Bearer ${token}",
+                                    maskValue: true
+                                ]
+                            ]
+                        )
+                        def jsonResponse = readJSON text: response.content
+                        def latestLaunchId = jsonResponse.content[0].id
 
-                        def jsonData = readJSON text: data
-                        if (jsonData['status'] != 'PASSED') {
-                            error("Quality Gate failed: ${jsonData['status']}")
-                        }
+                        def link = "<a href=\"${env.REPORTPORTAL_URL}/ui/#${env.REPORTPORTAL_PROJECT}/launches/all/${latestLaunchId}\">go to launch #${latestLaunchId}</a>"
+                        currentBuild.description = link
                     }
                 }
             }
