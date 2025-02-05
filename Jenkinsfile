@@ -8,7 +8,7 @@ pipeline {
     environment {
         SOLUTION_PATH = "${WORKSPACE}/TAAdvance.sln"
         PROJECT_PATH = "${WORKSPACE}/TAF/TAF.csproj"
-        RP_CONFIG_PATH = "${WORKSPACE}/TAF/reportportal.config.json"
+        RP_CONFIG_PATH = "${WORKSPACE}/TAF/ReportPortal.config.json"
         SLACK_CHANNEL = '#ci-cd'
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
