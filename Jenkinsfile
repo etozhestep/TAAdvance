@@ -44,14 +44,15 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
-                        sh '''
-                             export RP_SERVER_URL="http://reportportal-api-1:8585/api/v1"
-                             export RP_PROJECT="${REPORTPORTAL_PROJECT}"
-                             export RP_UUID="${RP_UUID}"
-                             dotnet test "${PROJECT_PATH}" \
-                                    --logger "trx;LogFileName=./TestResults/test_results.trx"
-                           '''
+                    withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')])
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE')    {
+                            sh '''
+                                export RP_SERVER_URL="http://reportportal-api-1:8585/api/v1"
+                                export RP_PROJECT="${REPORTPORTAL_PROJECT}"
+                                export RP_UUID="${RP_UUID}"
+                                dotnet test "${PROJECT_PATH}" \
+                                   --logger "trx;LogFileName=./TestResults/test_results.trx"
+                            '''
                     }
                 }
             }
