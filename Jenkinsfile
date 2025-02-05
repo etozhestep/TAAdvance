@@ -66,9 +66,12 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        sh label: 'Run Tests with RP', script: """
+                        sh """
                     dotnet test '${PROJECT_PATH}' \
-                        --logger "trx;LogFileName=./TestResults/test_results.trx"
+                        --logger "trx;LogFileName=./TestResults/test_results.trx" \
+                        /p:RP_API_BASE_URL="${env.REPORT_PORTAL_URL}" \
+                        /p:RP_PROJECT="${env.REPORTPORTAL_PROJECT}" \
+                        /p:RP_API_KEY="${env.RP_TOKEN}"
                 """
                     }
                 }
@@ -76,11 +79,35 @@ pipeline {
             post {
                 always {
                     xunit(
-                        tools: [MSTest(pattern: '**/TestResults/test_results.trx')]
+                        tools: [
+                            MSTest(
+                                pattern: '**/TestResults/test_results.trx',
+                                skipNoTestFiles: false,
+                                failIfNotNew: false,     
+                                deleteOutputFiles: true, 
+                                stopProcessingIfError: true
+                            )
+                        ]
                     )
                 }
             }
         }
+        stage('Verify RP Integration') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
+                        def response = httpRequest(
+                            url: "${env.REPORT_PORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch/latest",
+                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                        )
+                        if (response.status != 200) {
+                            error "ReportPortal integration failed: ${response.content}"
+                        }
+                    }
+                }
+            }
+        }
+        
         stage('Link RP to Jenkins') {
             steps {
                 script {
