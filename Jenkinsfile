@@ -25,8 +25,8 @@ pipeline {
                 checkout scm
             }
         }
-        steps('Clean'){
-            steps{
+        stage('Clean'){
+            steps {
                 sh ''' dotnet clean '''
             }
         }
