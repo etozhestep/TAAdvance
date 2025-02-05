@@ -14,7 +14,6 @@ pipeline {
         JIRA_PROJECT_KEY = 'TA'
         REPORTPORTAL_PROJECT = 'default_personal'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
-        REPORT_PORTAL_URL = 'http://172.23.0.15:9090'
         PATH = "${env.PATH}:/root/.dotnet/tools"
         RP_CREDS = 'report-portal-token'
     }
@@ -45,12 +44,12 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'reportportal-api-token', variable: 'RP_UUID')]) {
+                    withCredentials([string(credentialsId: 'report-portal-token', variable: 'RP_UUID')]) {
                         sh '''
-                             export RP_SERVER_URL="http://reportportal-ui-1:8080/api/v1"
-                             export RP_PROJECT="${env.REPORTPORTAL_PROJECT}"
-                             export RP_UUID="${env.RP_TOKEN}"
-                             dotnet test '${PROJECT_PATH}' \
+                             export RP_SERVER_URL="http://reportportal-api-1:8585/api/v1"
+                             export RP_PROJECT="${REPORTPORTAL_PROJECT}"
+                             export RP_UUID="${RP_UUID}"
+                             dotnet test "${PROJECT_PATH}" \
                                     --logger "trx;LogFileName=./TestResults/test_results.trx"
                            '''
                     }
