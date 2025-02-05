@@ -42,25 +42,6 @@ pipeline {
             }
         }
         
-        stage('Setting Up ReportPortal') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def configFilePath = env.RP_CONFIG_PATH
-                        def config = readJSON file: configFilePath
-
-                        config.server.authentication.uuid = token
-                        config.launch.name = "JENKINS_DEMO_${JOB_BASE_NAME}"
-                        config.launch.description = "${JOB_URL}${BUILD_NUMBER}"
-
-                        writeJSON file: configFilePath, json: config
-
-                        echo "Updated content of ${configFilePath}:"
-                        echo readFile(configFilePath)
-                    }
-                }
-            }
-        }
         stage('Test') {
             steps {
                 script {
@@ -92,30 +73,6 @@ pipeline {
             }
         }
         
-        stage('Link RP to Jenkins') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def response = httpRequest(
-                            url: "${env.REPORT_PORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch?page.page=1&page.size=1&page.sort=startTime,desc",
-                            customHeaders: [
-                                [
-                                    name: 'Authorization',
-                                    value: "Bearer ${token}",
-                                    maskValue: true
-                                ]
-                            ]
-                        )
-                        def jsonResponse = readJSON text: response.content
-                        def latestLaunchId = jsonResponse.content[0].id
-
-                        def link = "<a href=\"${env.REPORTPORTAL_URL}/ui/#${env.REPORTPORTAL_PROJECT}/launches/all/${latestLaunchId}\">go to launch #${latestLaunchId}</a>"
-                        currentBuild.description = link
-                    }
-                }
-            }
-        }
-
         stage('Update Jira') {
             steps {
                 script {
