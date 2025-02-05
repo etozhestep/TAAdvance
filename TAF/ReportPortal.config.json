@@ -4,7 +4,7 @@
   "server": {
     "url": "http://reportportal-api-1:8585/api/v1",
     "project": "default_personal",
-    "apiKey": "test_7k14EfsKQxumgB1KbWFt8K-qxDfQXryvXInPp7CBo7wrnOt1zo1uAND0ww87dpQk"
+    "apiKey": "${RP_UUID}"
   },
   "launch": {
     "name": "TAAdvance Tests",
