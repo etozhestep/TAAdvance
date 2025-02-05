@@ -92,21 +92,6 @@ pipeline {
                 }
             }
         }
-        stage('Verify RP Integration') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def response = httpRequest(
-                            url: "${env.REPORT_PORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch/latest",
-                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
-                        )
-                        if (response.status != 200) {
-                            error "ReportPortal integration failed: ${response.content}"
-                        }
-                    }
-                }
-            }
-        }
         
         stage('Link RP to Jenkins') {
             steps {
