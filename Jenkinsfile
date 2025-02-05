@@ -98,7 +98,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
                         def response = httpRequest(
-                            url: "${env.REPORTPORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch?page.page=1&page.size=1&page.sort=startTime,desc",
+                            url: "${env.REPORT_PORTAL_URL}/api/v1/${env.REPORTPORTAL_PROJECT}/launch?page.page=1&page.size=1&page.sort=startTime,desc",
                             customHeaders: [
                                 [
                                     name: 'Authorization',
