@@ -16,7 +16,7 @@ pipeline {
         JIRA_SITE = 'JiraCloud'
         JIRA_PROJECT_KEY = 'TA'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
-        REPORT_PORTAL_URL = 'http://172.23.0.15:9090
+        REPORT_PORTAL_URL = 'http://172.23.0.15:9090'
         RP_ATTRIBUTES = 'k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A'
         PATH = "${env.PATH}:/root/.dotnet/tools"
     }
