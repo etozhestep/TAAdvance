@@ -14,7 +14,7 @@ pipeline {
         JIRA_PROJECT_KEY = 'TA'
         REPORTPORTAL_PROJECT = 'default_personal'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
-        REPORT_PORTAL_URL = 'http://172.23.0.15:9090'
+        REPORT_PORTAL_URL = 'http://172.23.0.15:8080'
         PATH = "${env.PATH}:/root/.dotnet/tools"
         RP_CREDS = 'report-portal-token'
     }
