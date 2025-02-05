@@ -19,7 +19,6 @@ pipeline {
         REPORTPORTAL_PROJECT = 'default_personal'
         SONAR_HOST_URL = 'http://my-sonarqube:9000'
         REPORT_PORTAL_URL = 'http://172.23.0.15:9090'
-        RP_ATTRIBUTES = 'k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A'
         PATH = "${env.PATH}:/root/.dotnet/tools"
         RP_CREDS = 'report-portal-token'
     }
@@ -46,6 +45,26 @@ pipeline {
                 }
             }
         }
+        
+        stage('Setting Up ReportPortal') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
+                        def configFilePath = env.RP_CONFIG_PATH
+                        def config = readJSON file: configFilePath
+
+                        config.server.authentication.uuid = token
+                        config.launch.name = "JENKINS_DEMO_${JOB_BASE_NAME}"
+                        config.launch.description = "${JOB_URL}${BUILD_NUMBER}"
+
+                        writeJSON file: configFilePath, json: config
+
+                        echo "Updated content of ${configFilePath}:"
+                        echo readFile(configFilePath)
+                    }
+                }
+            }
+        }
 
         stage('Test') {
             steps {
@@ -53,11 +72,7 @@ pipeline {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                         sh label: 'Run Tests with RP', script: """
                     dotnet test '${PROJECT_PATH}' \
-                        --logger "trx;LogFileName=./TestResults/test_results.trx" \
-                        /p:RP.APIBaseUrl="${REPORT_PORTAL_URL}" \
-                        /p:RP.UUID="${RP_CREDS}" \
-                        /p:RP.LaunchName="TAAdvance_Build_${env.BUILD_NUMBER}" \
-                        /p:RP.attributes='k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A${env.ENCODED_URL}'
+                        --logger "trx;LogFileName=./TestResults/test_results.trx"
                 """
                     }
                 }
