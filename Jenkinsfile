@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: env.RP_CREDS, variable: 'token')]) {
-                        def configFilePath = "${WORKSPACE}/reportportal.config.json"
+                        def configFilePath = "${WORKSPACE}/TAAdvance/reportportal.config.json"
                         def config = readJSON file: configFilePath
 
                         config.rp.api.key = token
