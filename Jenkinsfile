@@ -61,18 +61,17 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             steps {
                 script {
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        sh """
-                    dotnet test '${PROJECT_PATH}' \
-                        --logger "trx;LogFileName=./TestResults/test_results.trx" \
-                        /p:RP_API_BASE_URL="${env.REPORT_PORTAL_URL}" \
-                        /p:RP_PROJECT="${env.REPORTPORTAL_PROJECT}" \
-                        /p:RP_API_KEY="${env.RP_TOKEN}"
-                """
+                    withCredentials([string(credentialsId: 'reportportal-api-token', variable: 'RP_UUID')]) {
+                        sh '''
+                             export RP_SERVER_URL="http://reportportal-ui-1:8080/api/v1"
+                             export RP_PROJECT="${env.REPORTPORTAL_PROJECT}"
+                             export RP_UUID="${env.RP_TOKEN}"
+                             dotnet test '${PROJECT_PATH}' \
+                                    --logger "trx;LogFileName=./TestResults/test_results.trx"
+                           '''
                     }
                 }
             }

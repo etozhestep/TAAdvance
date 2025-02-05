@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/reportportal/agent-net-nunit/master/src/ReportPortal.NUnitExtension/ReportPortal.config.schema",
   "enabled": true,
   "server": {
-    "url": "http://172.23.0.15:9090/api/v1",
-    "project": "default_personal",
+    "url": "${RP_SERVER_URL}",
+    "project": "${RP_PROJECT}",
     "authentication": {
       "uuid": "${RP_UUID}"
     }
