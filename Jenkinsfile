@@ -48,9 +48,6 @@ pipeline {
         }
 
         stage('Test') {
-            environment {
-                RP_API_TOKEN = credentials('report-portal-token')
-            }
             steps {
                 script {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
@@ -58,7 +55,7 @@ pipeline {
                     dotnet test '${PROJECT_PATH}' \
                         --logger "trx;LogFileName=./TestResults/test_results.trx" \
                         /p:RP.APIBaseUrl="${REPORT_PORTAL_URL}" \
-                        /p:RP.UUID="${RP_API_TOKEN}" \
+                        /p:RP.UUID="${RP_CREDS}" \
                         /p:RP.LaunchName="TAAdvance_Build_${env.BUILD_NUMBER}" \
                         /p:RP.attributes='k1%3Av1%3Bk2%3Av2%3Brp.webhook.key%3A${env.ENCODED_URL}'
                 """
